@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(grep -n '\\\\$5 ' PRD_BTSChile_v2.md)",
+      "Bash(npm --version)",
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --turbopack --eslint --no-src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(mkdir -p ../_bts_docs_tmp)",
+      "Bash(mv FASES_DESARROLLO.md PRD_BTSChile.md ../_bts_docs_tmp/)"
+    ]
+  }
+}
