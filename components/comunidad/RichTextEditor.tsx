@@ -217,14 +217,17 @@ function Toolbar({ editor }: { editor: Editor }) {
 export function RichTextEditor({
   placeholder = "Escribe algo…",
   charLimit,
+  content,
   onChange,
 }: {
   placeholder?: string;
   charLimit: number;
+  content?: string; // HTML inicial (para editar)
   onChange: (value: RichTextValue) => void;
 }) {
   const editor = useEditor({
     immediatelyRender: false, // evita mismatch de hidratación en Next.js
+    content,
     extensions: [
       StarterKit.configure({ heading: false }),
       TextStyle,

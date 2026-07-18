@@ -1,13 +1,22 @@
 "use client";
 
 // Picker de 6 reacciones — PRD §8.1.A. Toggle/reemplazo, bounce, top-3 + total, accesible.
+// UI OPTIMISTA: la reacción y el contador se actualizan al instante en local y luego se
+// reconcilian con el servidor (el conteo real lo mantiene una Cloud Function, que agrega
+// latencia). Si el write falla, se revierte y se avisa. Referencia: patrón optimistic-UI.
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toastError } from "@/components/ui/Toast";
 import { useAuth, useAuthStore } from "@/hooks/useAuth";
 import { removeReaction, setReaction, subscribeMyReaction } from "@/lib/firestore/community";
 import { REACTIONS, REACTION_EMOJI } from "@/lib/comunidad/reactions";
-import type { ReactionCounts, ReactionType } from "@/types";
+import { EMPTY_REACTION_COUNTS, type ReactionCounts, type ReactionType } from "@/types";
+
+interface Optimistic {
+  base: ReactionCounts; // referencia de `counts` al momento de reaccionar
+  counts: ReactionCounts; // conteo optimista mostrado
+  mine: ReactionType | null; // mi reacción optimista
+}
 
 export function ReactionPicker({
   postId,
@@ -20,16 +29,22 @@ export function ReactionPicker({
   const openLogin = useAuthStore((s) => s.openLogin);
   const [mine, setMine] = useState<ReactionType | null>(null);
   const [open, setOpen] = useState(false);
+  const [optimistic, setOptimistic] = useState<Optimistic | null>(null);
 
   useEffect(() => {
     if (!firebaseUser) return;
     return subscribeMyReaction(postId, firebaseUser.uid, setMine);
   }, [postId, firebaseUser]);
 
-  // Enmascara el valor si no hay sesión (sin setState en el effect).
-  const myReaction = firebaseUser ? mine : null;
+  const serverCounts = counts ?? EMPTY_REACTION_COUNTS;
+  // El optimista sigue vigente mientras el servidor no haya emitido un snapshot nuevo
+  // (misma referencia de `counts`). Al llegar datos frescos, mandan (se descarta).
+  const active = optimistic && optimistic.base === serverCounts ? optimistic : null;
 
-  const top3 = REACTIONS.map((r) => ({ ...r, count: counts[r.type] }))
+  const myReaction = active ? active.mine : firebaseUser ? mine : null;
+  const displayCounts = active ? active.counts : serverCounts;
+
+  const top3 = REACTIONS.map((r) => ({ ...r, count: displayCounts[r.type] }))
     .filter((r) => r.count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, 3);
@@ -40,15 +55,30 @@ export function ReactionPicker({
       openLogin();
       return;
     }
+
+    const prev = myReaction;
+    const next = prev === type ? null : type;
+
+    // 1) Update optimista instantáneo (reacción + contador).
+    const optCounts: ReactionCounts = { ...displayCounts };
+    if (prev) {
+      optCounts[prev] = Math.max(0, optCounts[prev] - 1);
+      optCounts.total = Math.max(0, optCounts.total - 1);
+    }
+    if (next) {
+      optCounts[next] = (optCounts[next] ?? 0) + 1;
+      optCounts.total = (optCounts.total ?? 0) + 1;
+    }
+    setOptimistic({ base: serverCounts, counts: optCounts, mine: next });
+
+    // 2) Escritura en segundo plano; el conteo real lo reconcilia la Cloud Function.
     try {
-      if (myReaction === type) {
-        await removeReaction(postId, firebaseUser.uid);
-      } else {
-        await setReaction(postId, firebaseUser.uid, type);
-      }
+      if (next === null) await removeReaction(postId, firebaseUser.uid);
+      else await setReaction(postId, firebaseUser.uid, type);
     } catch (err) {
       console.error(err);
-      toastError("No se pudo registrar tu reacción.");
+      setOptimistic(null); // revertir
+      toastError("No se pudo registrar tu reacción. Inténtalo de nuevo.");
     }
   }
 
@@ -73,7 +103,7 @@ export function ReactionPicker({
                 {r.emoji} {r.count}
               </span>
             ))}
-            <span className="ml-1 tabular-nums">· {counts.total}</span>
+            <span className="ml-1 tabular-nums">· {displayCounts.total}</span>
           </span>
         ) : (
           <span className="text-text-muted">Reaccionar</span>

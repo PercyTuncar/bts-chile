@@ -13,3 +13,4 @@ export {
 export { onReviewWrite } from "./reviews";
 export { birthdayEmailsDaily, orderConfirmationEmail } from "./emails";
 export { grantAdminTrial } from "./adminTrials";
+export { sendArmyChatMessage, editChatMessage, deleteChatMessage } from "./chat";

@@ -5,13 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useArmyChatNotifications } from "@/hooks/useArmyChatNotifications";
 import { useConversations } from "@/hooks/useConversations";
 import { cn } from "@/lib/utils/cn";
 
 export function MessagesIcon() {
   const pathname = usePathname();
   const { status } = useAuth();
-  const { totalUnread } = useConversations();
+  const { totalUnread: dmUnread } = useConversations();
+  const { unread: chatUnread } = useArmyChatNotifications(); // 0 si el chat está silenciado
+  const totalUnread = dmUnread + chatUnread;
   const active = pathname.startsWith("/mensajes");
 
   return (

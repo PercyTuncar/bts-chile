@@ -33,7 +33,11 @@ service cloud.firestore {
         && after.paypalSubscriptionId == before.paypalSubscriptionId
         // Contadores sociales: solo los actualizan las Cloud Functions (Admin SDK).
         && after.followersCount == before.followersCount
-        && after.followingCount == before.followingCount;
+        && after.followingCount == before.followingCount
+        // Moderación del ARMY Chat: solo admin/Cloud Functions cambian mute/ban.
+        && after.get('isMuted', false) == before.get('isMuted', false)
+        && after.get('mutedUntil', null) == before.get('mutedUntil', null)
+        && after.get('isBanned', false) == before.get('isBanned', false);
     }
 
     // Usernames: reserva de unicidad (usernames/{usernameLower} = { uid }).
@@ -76,6 +80,37 @@ service cloud.firestore {
           && request.resource.data.senderUid == request.auth.uid
           && request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participants;
       }
+    }
+
+    // ARMY Chat (grupal) — §8.x. Lectura para todo logueado. Los mensajes SOLO los
+    // escribe la Cloud Function `sendArmyChatMessage` (Admin SDK) → create/update/delete
+    // bloqueados al cliente (rate-limit, mute/ban y sanitización se aplican allí).
+    match /chatRooms/{roomId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin(); // Fase 2: abrir/cerrar, fijar mensaje
+      match /messages/{msgId} {
+        allow read: if request.auth != null;
+        allow create, update, delete: if false;
+      }
+      // Contenido de mensajes borrados: solo el admin lo ve; solo la función lo escribe.
+      match /deletedContent/{msgId} {
+        allow read: if isAdmin();
+        allow write: if false;
+      }
+      // Presencia de escritura ("@X escribiendo…"): cada quien escribe la suya.
+      match /typing/{uid} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+    // Estado de rate-limit por usuario: cada quien lee el suyo; solo la función escribe.
+    match /armyChatRate/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+    // Lecturas del chat por usuario (badge de nuevos + silenciar notificaciones).
+    match /armyChatReads/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
     // Posts: crear requiere membresía != free; leer si aprobado o admin; update status solo admin

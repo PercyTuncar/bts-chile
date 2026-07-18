@@ -59,5 +59,9 @@ export function useAuth() {
     canPublish:
       !!store.profile &&
       (store.profile.membershipType !== "free" || store.profile.role === "admin"),
+    /** Enviar en el ARMY Chat: Basic+ o admin (§8.x). Free puede leer, no escribir. */
+    canChat:
+      !!store.profile &&
+      (store.profile.membershipType !== "free" || store.profile.role === "admin"),
   };
 }

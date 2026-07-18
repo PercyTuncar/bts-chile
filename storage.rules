@@ -31,6 +31,15 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
     }
 
+    // Imágenes del ARMY Chat: lectura pública; dueño sube en su carpeta (≤ 5MB, imagen).
+    match /armychat/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
     // Productos y noticias: lectura pública; escritura solo autenticados (el admin, en la práctica;
     // el control fino de rol se aplica en el flujo del dashboard + Firestore Rules).
     match /products/{allPaths=**} {

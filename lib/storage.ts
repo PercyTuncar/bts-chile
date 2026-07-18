@@ -23,3 +23,8 @@ export function communityImagePath(uid: string, fileName: string): string {
 export function messageImagePath(uid: string, fileName: string): string {
   return `messages/${uid}/${Date.now()}-${fileName}`;
 }
+
+/** Ruta de imagen del ARMY Chat: armychat/{uid}/{timestamp}-{fileName}. §8.x */
+export function armyChatImagePath(uid: string, fileName: string): string {
+  return `armychat/${uid}/${Date.now()}-${fileName}`;
+}

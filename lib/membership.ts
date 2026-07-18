@@ -113,6 +113,53 @@ export function albumImageLimit(membershipType: MembershipType, isAdmin: boolean
   return ALBUM_IMAGE_LIMITS[membershipType] ?? 5;
 }
 
+// --------------------------------------------------------------------------
+// ARMY Chat — rate-limit por plan (§8.x).
+// "Burst": mensajes seguidos permitidos antes del cooldown. Cooldown: rango
+// aleatorio [min,max] ms. Planes altos = más mensajes + menos espera. Admin: sin límite.
+// --------------------------------------------------------------------------
+export const CHAT_BURST_LIMITS: Record<MembershipType, number> = {
+  free: 0, // free no envía
+  basic: 5,
+  premium: 8,
+  vip: 12,
+};
+
+export const CHAT_COOLDOWN_MS: Record<MembershipType, { min: number; max: number }> = {
+  free: { min: 0, max: 0 },
+  basic: { min: 3000, max: 5000 },
+  premium: { min: 2000, max: 3000 },
+  vip: { min: 1000, max: 2000 },
+};
+
+export const CHAT_CHAR_LIMITS: Record<MembershipType, number> = {
+  free: 0,
+  basic: 500,
+  premium: 800,
+  vip: 1200,
+};
+
+/** Mensajes seguidos antes del cooldown. Admin: sin límite (Infinity). */
+export function chatBurstLimit(membershipType: MembershipType, isAdmin: boolean): number {
+  if (isAdmin) return Infinity;
+  return CHAT_BURST_LIMITS[membershipType] ?? 0;
+}
+
+/** Rango [min,max] ms del cooldown aleatorio. Admin: sin espera. */
+export function chatCooldownRange(
+  membershipType: MembershipType,
+  isAdmin: boolean,
+): { min: number; max: number } {
+  if (isAdmin) return { min: 0, max: 0 };
+  return CHAT_COOLDOWN_MS[membershipType] ?? { min: 3000, max: 5000 };
+}
+
+/** Máximo de caracteres por mensaje. Admin: 2000. */
+export function chatCharLimit(membershipType: MembershipType, isAdmin: boolean): number {
+  if (isAdmin) return 2000;
+  return CHAT_CHAR_LIMITS[membershipType] ?? 500;
+}
+
 /** Días restantes de una membresía a partir de su fecha de expiración. */
 export function daysRemaining(expiryMs: number): number {
   return Math.max(0, Math.ceil((expiryMs - Date.now()) / (24 * 60 * 60 * 1000)));

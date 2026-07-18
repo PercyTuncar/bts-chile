@@ -119,6 +119,11 @@ export interface User {
   followingCount: number;
   isActive: boolean;
   newsletter: boolean;
+  // Moderación del ARMY Chat (§8.x). Solo admin/Cloud Functions los escriben (ver reglas).
+  // Definidos en Fase 1; el enforcement de mute/ban es Fase 2.
+  isMuted?: boolean;
+  mutedUntil?: Timestamp | null;
+  isBanned?: boolean;
 }
 
 // Reserva de unicidad de username — usernames/{usernameLower}
@@ -154,6 +159,41 @@ export interface Message {
   text: string;
   imageURL: string | null;
   createdAt: Timestamp;
+}
+
+// --------------------------------------------------------------------------
+// ARMY Chat (grupal) — chatRooms/{roomId} (+ subcolección messages) — §8.x
+// Los mensajes SOLO los escribe la Cloud Function `sendArmyChatMessage` (Admin SDK).
+// --------------------------------------------------------------------------
+export interface ChatRoom {
+  isOpen: boolean; // Fase 2: abrir/cerrar el chat para todos
+  pinnedMessageId: string | null; // Fase 2: mensaje fijado
+  messageCount: number; // contador para badges de "nuevos" (Fase 3)
+  lastMessageAt: Timestamp | null;
+}
+
+export interface ChatMessage {
+  senderUid: string;
+  senderNickname: string;
+  senderUsername: string;
+  senderPhotoURL: string | null;
+  senderMembership: MembershipType;
+  senderRole: Role;
+  text: string; // texto plano (para límite/preview)
+  richContent: string | null; // HTML de Tiptap saneado (formato)
+  imageURL: string | null;
+  createdAt: Timestamp;
+  editedAt: Timestamp | null; // Fase 2
+  deleted: boolean; // Fase 2 (soft-delete)
+  deletedBy: string | null; // Fase 2
+  pinned: boolean; // Fase 2
+}
+
+/** Estado de rate-limit por usuario — armyChatRate/{uid} (solo Admin SDK escribe). */
+export interface ChatRateState {
+  burstRemaining: number;
+  cooldownUntil: Timestamp | null;
+  updatedAt: Timestamp;
 }
 
 // Notificaciones — notifications/{id}
