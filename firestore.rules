@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function membership() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.membershipType;
+    }
+
+    // Usuarios: leer si auth; crear el propio; actualizar el propio SOLO campos de perfil
+    // (los campos de membresía/rol los cambian únicamente admin o Cloud Functions vía Admin SDK).
+    match /users/{uid} {
+      allow read: if request.auth != null;
+      allow create: if request.auth.uid == uid;
+      allow update: if isAdmin()
+        || (request.auth.uid == uid && membershipFieldsUnchanged());
+    }
+    // El usuario NO puede autoconcederse membresía/rol/trial. Estos campos solo cambian por
+    // admin o por las Cloud Functions (que usan el Admin SDK y saltan estas reglas).
+    function membershipFieldsUnchanged() {
+      let before = resource.data;
+      let after = request.resource.data;
+      return after.role == before.role
+        && after.membershipType == before.membershipType
+        && after.membershipStatus == before.membershipStatus
+        && after.membershipExpiry == before.membershipExpiry
+        && after.membershipSource == before.membershipSource
+        && after.isTrial == before.isTrial
+        && after.hasUsedWelcomeTrial == before.hasUsedWelcomeTrial
+        && after.paypalSubscriptionId == before.paypalSubscriptionId
+        // Contadores sociales: solo los actualizan las Cloud Functions (Admin SDK).
+        && after.followersCount == before.followersCount
+        && after.followingCount == before.followingCount;
+    }
+
+    // Usernames: reserva de unicidad (usernames/{usernameLower} = { uid }).
+    // El `create` de Firestore solo pasa si el doc NO existe → garantiza unicidad.
+    match /usernames/{name} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // Seguidores: cada quien crea/borra solo su propio follow.
+    match /follows/{id} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.followerUid == request.auth.uid;
+      allow delete: if request.auth != null
+        && resource.data.followerUid == request.auth.uid;
+    }
+
+    // Notificaciones: solo el destinatario las lee/marca como leídas; las crean las
+    // Cloud Functions (Admin SDK), nunca el cliente.
+    match /notifications/{id} {
+      allow read, update, delete: if request.auth != null
+        && resource.data.recipientUid == request.auth.uid;
+      allow create: if false;
+    }
+
+    // Mensajería privada: solo los participantes leen/escriben la conversación.
+    match /conversations/{convId} {
+      allow read, update: if request.auth != null
+        && request.auth.uid in resource.data.participants;
+      allow create: if request.auth != null
+        && request.auth.uid in request.resource.data.participants;
+
+      match /messages/{msgId} {
+        allow read: if request.auth != null
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participants;
+        allow create: if request.auth != null
+          && request.resource.data.senderUid == request.auth.uid
+          && request.auth.uid in get(/databases/$(database)/documents/conversations/$(convId)).data.participants;
+      }
+    }
+
+    // Posts: crear requiere membresía != free; leer si aprobado o admin; update status solo admin
+    match /posts/{postId} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      // Publicar requiere membresía de pago; el admin puede publicar aunque sea free.
+      // Solo el admin puede crear ya 'approved' (auto-publicación sin revisión); el
+      // resto debe entrar como 'pending' (moderación).
+      allow create: if request.auth != null
+        && (membership() != 'free' || isAdmin())
+        && (request.resource.data.status == 'pending' || isAdmin());
+      allow update: if isAdmin()
+        || (request.auth.uid == resource.data.authorUid
+            && request.resource.data.status == resource.data.status);
+      allow delete: if request.auth.uid == resource.data.authorUid || isAdmin();
+
+      // Reacciones: cualquier autenticado escribe SOLO la suya
+      match /reactions/{uid} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+      // Votos de encuesta: un voto por usuario, editable solo por su dueño.
+      match /votes/{uid} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.uid == uid;
+      }
+      // Comentarios: crear si auth; moderación/borrado admin o autor
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if request.auth != null;
+        allow update, delete: if isAdmin() || request.auth.uid == resource.data.authorUid;
+      }
+      // Reportes: un reporte por usuario
+      match /reports/{uid} {
+        allow read: if isAdmin();
+        allow create: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    match /news/{slug}      { allow read: if resource.data.status == 'published' || isAdmin();
+                              allow write: if isAdmin(); }
+    match /tickets/{zoneId} { allow read: if true; allow write: if isAdmin(); }
+    match /orders/{orderId} { allow create: if request.auth != null;
+                              allow read: if request.auth.uid == resource.data.buyerUid || isAdmin();
+                              allow update: if isAdmin(); }
+    match /storeOrders/{id} { allow create: if request.auth != null;
+                              allow read: if request.auth.uid == resource.data.buyerUid || isAdmin();
+                              allow update: if isAdmin(); }
+    match /products/{slug}  { allow read: if resource.data.status == 'published' || isAdmin();
+                              allow write: if isAdmin(); }
+
+    // Reseñas: crear si auth; visibles solo si aprobadas o admin; moderación admin
+    match /reviews/{reviewId} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.authorUid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /newsletter/{email}     { allow create: if true; allow read, update: if isAdmin(); }
+    match /whatsappGroups/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /memberships/{id}       { allow read: if isAdmin(); allow write: if isAdmin(); }
+    // paypalEvents: solo Cloud Functions (Admin SDK). Bloqueado para todo cliente.
+    match /paypalEvents/{eventId} { allow read, write: if false; }
+    match /raffles/{id}           { allow read: if true; allow write: if isAdmin();
+      match /tickets/{ticketId}   { allow read: if isAdmin();
+                                    allow create: if request.auth != null; }
+    }
+
+    // Fase 2 (§13.13): sponsors y classes públicos de lectura, admin escribe;
+    // waitlist la crea el usuario autenticado y solo el admin la lee.
+    match /sponsors/{id}          { allow read: if true; allow write: if isAdmin(); }
+    match /classes/{slug}         { allow read: if true; allow write: if isAdmin(); }
+    match /waitlist/{id}          { allow create: if request.auth != null;
+                                    allow read, update, delete: if isAdmin(); }
+  }
+}

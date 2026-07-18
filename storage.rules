@@ -1,0 +1,51 @@
+rules_version = '2';
+
+// Reglas de Firebase Storage — PRD §4.2 (avatars), §4.3 (community), §7.4 (products), §9.1 (news).
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Avatares: lectura pública; solo el dueño sube el suyo (≤ 5MB, imagen).
+    match /avatars/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Imágenes de comunidad: lectura pública; solo el dueño sube en su carpeta (≤ 5MB).
+    match /community/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Imágenes de mensajes privados: lectura pública (URL no adivinable); dueño sube (≤ 5MB).
+    match /messages/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Productos y noticias: lectura pública; escritura solo autenticados (el admin, en la práctica;
+    // el control fino de rol se aplica en el flujo del dashboard + Firestore Rules).
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /news/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Entradas entregadas (PDF/imagen): privado; se sirve por URL firmada desde el servidor.
+    match /tickets/{allPaths=**} {
+      allow read: if false;
+      allow write: if request.auth != null;
+    }
+  }
+}

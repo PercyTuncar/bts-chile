@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Cloud Functions es un subproyecto Node con su propio tsconfig/lint.
+    "functions/**",
   ]),
 ]);
 

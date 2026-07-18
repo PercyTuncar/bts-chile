@@ -6,7 +6,14 @@
       "Bash(npm --version)",
       "Bash(npx --yes create-next-app@latest . --typescript --tailwind --app --turbopack --eslint --no-src-dir --import-alias \"@/*\" --use-npm --yes)",
       "Bash(mkdir -p ../_bts_docs_tmp)",
-      "Bash(mv FASES_DESARROLLO.md PRD_BTSChile.md ../_bts_docs_tmp/)"
+      "Bash(mv FASES_DESARROLLO.md PRD_BTSChile.md ../_bts_docs_tmp/)",
+      "Bash(mv ../_bts_docs_tmp/*.md .)",
+      "Bash(rmdir ../_bts_docs_tmp)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\({next:p.dependencies.next, react:p.dependencies.react, tw:p.devDependencies.tailwindcss}, null, 2\\)\\)\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"=== TSC EXIT: $? ===\")",
+      "Bash(npm run *)"
     ]
   }
 }

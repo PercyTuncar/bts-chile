@@ -1,0 +1,204 @@
+/* ==========================================================================
+   btschile.com — Design System "Apple-Glass Morado"  (PRD §3)
+   Tailwind CSS v4 (CSS-first). Tokens, glass, tipografía, movimiento.
+   ========================================================================== */
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Modo oscuro por CLASE (.dark) — toggle manual persistido + prefers-color-scheme.
+   El script inline del layout fija la clase en el primer paint (sin FOUC). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* --------------------------------------------------------------------------
+   Tokens de color — PRD §3.2.A. Valores semánticos que cambian por tema.
+   -------------------------------------------------------------------------- */
+:root {
+  --brand: #8b2fc9;
+  --brand-strong: #6d21a6;
+  --brand-soft: #f3eafe;
+  --accent: #d9c7a8; /* champagne */
+  --bg: #fafafc;
+  --surface: #ffffff;
+  --text: #0b0b0f;
+  --text-muted: #6e6e76;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Forma y espaciado — PRD §3.2.D */
+  --radius-button: 13px;
+  --radius-card: 22px;
+  --radius-sheet: 28px;
+}
+
+.dark {
+  --brand: #a855f7;
+  --brand-strong: #7c3aed;
+  --brand-soft: #1c1430;
+  --accent: #e9dbff; /* lavanda */
+  --bg: #0b0b0f;
+  --surface: #141419;
+  --text: #f5f5f7;
+  --text-muted: #a1a1aa;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+/* --------------------------------------------------------------------------
+   Mapeo a utilidades Tailwind (bg-brand, text-muted, rounded-card, etc.)
+   `inline` referencia las CSS vars sin congelar su valor → theming en vivo.
+   -------------------------------------------------------------------------- */
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-kr: var(--font-noto-kr), var(--font-inter), sans-serif;
+
+  --radius-button: var(--radius-button);
+  --radius-card: var(--radius-card);
+  --radius-sheet: var(--radius-sheet);
+
+  /* Escala tipográfica estilo apple.com — PRD §3.2.C */
+  --text-display: 4rem; /* 64px */
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-h1: 2.75rem; /* 44px */
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: 1.875rem; /* 30px */
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.375rem; /* 22px */
+  --text-h3--line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* Foco visible — anillo morado (accesibilidad AA, PRD §3.3) */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /* Números tabulares en precios */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Material glass (glassmorphism) — PRD §3.2.B
+   -------------------------------------------------------------------------- */
+@layer components {
+  .glass {
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  .glass-nav {
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    backdrop-filter: blur(28px) saturate(170%);
+    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  }
+  .glass-card {
+    background: color-mix(in srgb, var(--surface) 65%, transparent);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  .glass-modal,
+  .glass-sheet {
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(24px) saturate(170%);
+    -webkit-backdrop-filter: blur(24px) saturate(170%);
+    border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.24);
+  }
+
+  /* Gradiente "aurora morada" para heros — PRD §3.2.A */
+  .aurora {
+    position: relative;
+    isolation: isolate;
+  }
+  .aurora::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 55% at 20% 10%, color-mix(in srgb, var(--brand) 45%, transparent), transparent 70%),
+      radial-gradient(50% 50% at 85% 20%, color-mix(in srgb, var(--accent) 40%, transparent), transparent 70%),
+      radial-gradient(70% 60% at 50% 100%, color-mix(in srgb, var(--brand-strong) 30%, transparent), transparent 70%);
+    filter: blur(8px);
+    pointer-events: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Movimiento — PRD §3.2.E. Shimmer para skeletons + reduced-motion.
+   -------------------------------------------------------------------------- */
+@layer utilities {
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--text) 6%, transparent),
+      transparent
+    );
+    animation: shimmer 1.6s infinite;
+  }
+}
+
+/* Respetar prefers-reduced-motion (obligatorio, PRD §3.2.E) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
