@@ -7,10 +7,21 @@ import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Modal } from "@/components/ui/Modal";
 import { PillButton } from "@/components/ui/PillButton";
-import type { WhatsappGroup, WithId } from "@/types";
 
-export function GruposGrid({ groups }: { groups: WithId<WhatsappGroup>[] }) {
-  const [qrGroup, setQrGroup] = useState<WithId<WhatsappGroup> | null>(null);
+// Datos planos (serializables) que necesita la tarjeta — el Server Component debe
+// mapear a esto para no pasar el Timestamp `updatedAt` a un Client Component.
+export interface GroupCard {
+  id: string;
+  name: string;
+  region: string;
+  link: string;
+  isFull: boolean;
+  currentMembers: number;
+  maxMembers: number;
+}
+
+export function GruposGrid({ groups }: { groups: GroupCard[] }) {
+  const [qrGroup, setQrGroup] = useState<GroupCard | null>(null);
 
   if (groups.length === 0) {
     return (

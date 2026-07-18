@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { GruposGrid } from "@/components/comunidad/GruposGrid";
+import { GruposGrid, type GroupCard } from "@/components/comunidad/GruposGrid";
 import { getWhatsappGroups } from "@/lib/firestore/community";
 import { SITE_URL } from "@/lib/utils/seo";
-import type { WhatsappGroup, WithId } from "@/types";
+
+// Render dinámico: los grupos los administra el panel en vivo, así que la página
+// debe leer Firestore en cada visita (si no, Next la cachea estática y no se ven
+// los grupos nuevos añadidos desde /panel-admin/moderacion).
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Grupos de WhatsApp ARMY Chile",
@@ -12,9 +16,18 @@ export const metadata: Metadata = {
 };
 
 export default async function GruposPage() {
-  let groups: WithId<WhatsappGroup>[] = [];
+  let groups: GroupCard[] = [];
   try {
-    groups = await getWhatsappGroups();
+    // Mapear a objetos planos: no pasar el Timestamp `updatedAt` al Client Component.
+    groups = (await getWhatsappGroups()).map((g) => ({
+      id: g.id,
+      name: g.name,
+      region: g.region,
+      link: g.link,
+      isFull: g.isFull,
+      currentMembers: g.currentMembers,
+      maxMembers: g.maxMembers,
+    }));
   } catch (err) {
     console.warn("grupos: Firestore no disponible", err);
   }

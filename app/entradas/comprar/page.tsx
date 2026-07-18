@@ -146,7 +146,7 @@ export default async function ComprarPage({ searchParams }: { searchParams: Sear
 
       <p className="mt-8 text-center text-sm text-text-muted">
         <GlassCard as="span" className="inline-block px-4 py-2">
-          🔒 Compra 100% segura · Entrega por email en 24-48 horas hábiles
+          🔒 Compra 100% segura ·
         </GlassCard>
       </p>
     </main>

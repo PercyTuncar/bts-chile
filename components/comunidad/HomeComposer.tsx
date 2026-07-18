@@ -47,7 +47,7 @@ export function HomeComposer() {
         <button
           type="button"
           onClick={handleOpen}
-          className="h-11 flex-1 rounded-full bg-[color-mix(in_srgb,var(--text)_6%,transparent)] px-4 text-left text-text-muted transition-colors hover:bg-[color-mix(in_srgb,var(--text)_10%,transparent)]"
+          className="h-11 flex-1 rounded-full bg-[color-mix(in_srgb,var(--text)_6%,transparent)] px-4 text-left text-sm text-text-muted/70 transition-colors hover:bg-[color-mix(in_srgb,var(--text)_10%,transparent)]"
         >
           ¿Qué estás pensando, {firstName}?
         </button>
