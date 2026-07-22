@@ -64,7 +64,7 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
     control,
     formState: { errors, isValid },
   } = useForm<NewsFormData>({
-    resolver: zodResolver(newsFormSchema),
+    resolver: zodResolver(newsFormSchema) as any,
     mode: "onChange",
     defaultValues: {
       title: initial?.title ?? "",
@@ -233,7 +233,7 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
         authorName: data.authorName,
         authorUrl: data.authorUrl,
         status: data.status,
-        scheduledFor: data.scheduledFor || null,
+        scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null,
         readingTimeMinutes: readingTime,
       });
 

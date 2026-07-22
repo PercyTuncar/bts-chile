@@ -70,20 +70,18 @@ export const newsFormSchema = z.object({
   metaTitle: z
     .string()
     .max(60, "Máximo 60 caracteres para meta título (Google trunca a ~580px)")
-    .optional()
-    .or(z.literal("")),
+    .default(""),
   headline: z
     .string()
     .max(110, "Máximo 110 caracteres para headline de NewsArticle (límite duro de Google)")
-    .optional()
-    .or(z.literal("")),
+    .default(""),
 
   // Imágenes (URLs, la validación de dimensiones se hace en el servidor)
   // Nota: Permiten string vacío porque las imágenes se suben después de la validación del form
-  featuredImageURL: z.string().optional().or(z.literal("")),
-  seoImageSquareURL: z.string().optional().or(z.literal("")),
-  ogImageURL: z.string().optional().or(z.literal("")),
-  twitterImageURL: z.string().optional().or(z.literal("")),
+  featuredImageURL: z.string().default(""),
+  seoImageSquareURL: z.string().default(""),
+  ogImageURL: z.string().default(""),
+  twitterImageURL: z.string().default(""),
   imageAlt: z.string().min(1, "El texto alternativo es obligatorio").max(125, "Máximo 125 caracteres"),
 
   // Categoría y tags
@@ -99,11 +97,11 @@ export const newsFormSchema = z.object({
   // Autor
   authorUid: z.string().min(1, "Autor obligatorio"),
   authorName: z.string().min(1, "Nombre del autor obligatorio"),
-  authorUrl: z.string().url("URL del autor inválida").optional().or(z.literal("")),
+  authorUrl: z.string().default(""),
 
   // Estado
   status: z.enum(["draft", "published", "scheduled", "archived"] as const),
-  scheduledFor: z.date().nullable().optional(),
+  scheduledFor: z.string().optional(),
 });
 
 export type NewsFormData = z.infer<typeof newsFormSchema>;
