@@ -4,18 +4,76 @@
  */
 
 /**
+ * Convierte colores de BlockNote a valores CSS.
+ * BlockNote usa nombres como "purple", "blue", etc.
+ */
+function convertBlockNoteColor(color: string): string {
+  const colorMap: Record<string, string> = {
+    default: "inherit",
+    gray: "#9ca3af",
+    brown: "#92400e",
+    red: "#dc2626",
+    orange: "#ea580c",
+    yellow: "#ca8a04",
+    green: "#16a34a",
+    blue: "#2563eb",
+    purple: "#8b2fc9", // Color de marca
+    pink: "#ec4899",
+  };
+
+  return colorMap[color] || color;
+}
+
+/**
  * Convierte bloques de BlockNote a Markdown.
  * Usa el conversor nativo de BlockNote si está disponible.
  */
 export function blocksToMarkdown(blocks: any[]): string {
-  // BlockNote tiene su propio conversor, pero por simplicidad
-  // implementamos una versión básica aquí
-  return blocks.map(blockToMarkdown).join("\n\n");
+  // DEBUG: Ver estructura de bloques
+  console.log("=== BLOCKS TO MARKDOWN DEBUG ===");
+  console.log("Total blocks:", blocks.length);
+
+  // Mostrar TODOS los bloques con detalle completo
+  blocks.forEach((block, index) => {
+    console.log(`\n--- Block ${index} ---`);
+    console.log("Type:", block.type);
+    console.log("Props:", JSON.stringify(block.props, null, 2));
+    console.log("Content array:", JSON.stringify(block.content, null, 2));
+
+    // Detallar cada item de content
+    if (Array.isArray(block.content)) {
+      block.content.forEach((item: any, itemIndex: number) => {
+        console.log(`  Content item ${itemIndex}:`, {
+          type: item.type,
+          text: item.text,
+          styles: item.styles,
+          hasTextColor: !!item.styles?.textColor,
+          hasBackgroundColor: !!item.styles?.backgroundColor,
+        });
+      });
+    }
+  });
+
+  const result = blocks.map(blockToMarkdown).join("\n\n");
+
+  console.log("\n=== MARKDOWN RESULT ===");
+  console.log(result);
+  console.log("=== END DEBUG ===\n");
+
+  return result;
 }
 
 function blockToMarkdown(block: any): string {
   const type = block.type;
   const content = block.content || [];
+  const props = block.props || {};
+
+  // DEBUG: Ver contenido del bloque
+  if (Array.isArray(content) && content.length > 0) {
+    console.log("=== BLOCK CONTENT ===");
+    console.log("Type:", type);
+    console.log("Content item 0:", JSON.stringify(content[0], null, 2));
+  }
 
   // Extraer texto con estilos (negrita, cursiva, colores, etc.)
   let text = "";
@@ -27,17 +85,14 @@ function blockToMarkdown(block: any): string {
           let txt = item.text || "";
           const styles = item.styles || {};
 
-          // Aplicar estilos en orden: color primero, luego formato
-          // Color de texto (usar span HTML inline)
-          if (styles.textColor) {
-            txt = `<span style="color: ${styles.textColor}">${txt}</span>`;
+          // DEBUG: Ver estilos
+          if (Object.keys(styles).length > 0) {
+            console.log("=== STYLES FOUND ===");
+            console.log("Text:", txt);
+            console.log("Styles:", styles);
           }
 
-          // Background color
-          if (styles.backgroundColor) {
-            txt = `<span style="background-color: ${styles.backgroundColor}">${txt}</span>`;
-          }
-
+          // Aplicar estilos inline (a nivel de texto)
           // Bold
           if (styles.bold) {
             txt = `**${txt}**`;
@@ -63,6 +118,16 @@ function blockToMarkdown(block: any): string {
             txt = "`" + txt + "`";
           }
 
+          // Color de texto a nivel inline (si existe)
+          if (styles.textColor) {
+            txt = `<span style="color: ${styles.textColor}">${txt}</span>`;
+          }
+
+          // Background color inline (si existe)
+          if (styles.backgroundColor) {
+            txt = `<span style="background-color: ${styles.backgroundColor}">${txt}</span>`;
+          }
+
           return txt;
         }
         return "";
@@ -70,6 +135,24 @@ function blockToMarkdown(block: any): string {
       .join("");
   } else if (typeof content === "string") {
     text = content;
+  }
+
+  // Aplicar colores a nivel de bloque (desde props)
+  const hasBlockTextColor = props.textColor && props.textColor !== "default";
+  const hasBlockBackgroundColor = props.backgroundColor && props.backgroundColor !== "default";
+
+  if (hasBlockTextColor || hasBlockBackgroundColor) {
+    let style = "";
+    if (hasBlockTextColor) {
+      // Convertir color de BlockNote a CSS
+      const color = convertBlockNoteColor(props.textColor);
+      style += `color: ${color};`;
+    }
+    if (hasBlockBackgroundColor) {
+      const bgColor = convertBlockNoteColor(props.backgroundColor);
+      style += `background-color: ${bgColor};`;
+    }
+    text = `<span style="${style}">${text}</span>`;
   }
 
   switch (type) {
