@@ -87,6 +87,13 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
     },
   });
 
+  // Debug: mostrar errores en consola
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      console.log("=== FORM ERRORS ===", errors);
+    }
+  }, [errors]);
+
   // Watch para actualizar previews en tiempo real
   const formData = watch();
 
@@ -105,6 +112,39 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
   }, [formData.title, formData.headline, setValue]);
 
   async function onSubmit(data: NewsFormData) {
+    console.log("=== SUBMIT DATA ===", data);
+    console.log("Tags:", data.tags, "Type:", Array.isArray(data.tags), "Length:", data.tags?.length);
+
+    // Validación adicional para publicación
+    if (data.status === "published") {
+      const errors: string[] = [];
+
+      if (!data.tags || data.tags.length === 0) {
+        errors.push("Se requiere al menos 1 tag para publicar");
+      }
+
+      if (!heroFile && !data.featuredImageURL) {
+        errors.push("Se requiere imagen hero para publicar");
+      }
+
+      if (!squareFile && !data.seoImageSquareURL) {
+        errors.push("Se requiere imagen cuadrada 1:1 para publicar");
+      }
+
+      if (!ogFile && !data.ogImageURL) {
+        errors.push("Se requiere imagen Open Graph para publicar");
+      }
+
+      if (!data.imageAlt) {
+        errors.push("Se requiere texto alternativo para publicar");
+      }
+
+      if (errors.length > 0) {
+        toastError(errors.join(". "));
+        return;
+      }
+    }
+
     setSaving(true);
 
     try {
@@ -315,20 +355,32 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
             </label>
 
             <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium">Tags (separados por coma)</span>
+              <span className="text-sm font-medium">
+                Tags (separados por coma)
+                {formData.status === "published" && (
+                  <span className="text-danger"> *</span>
+                )}
+              </span>
               <input
-                {...register("tags")}
-                className={input}
+                className={cn(input, errors.tags && "border-danger")}
                 placeholder="BTS, K-pop, Noticias"
                 onChange={(e) => {
                   const tagsArray = e.target.value
                     .split(",")
                     .map((t) => t.trim())
                     .filter(Boolean);
-                  setValue("tags", tagsArray);
+                  setValue("tags", tagsArray, { shouldValidate: true });
                 }}
-                defaultValue={initial?.tags.join(", ") ?? ""}
+                defaultValue={initial?.tags?.join(", ") ?? ""}
               />
+              {errors.tags && (
+                <span className="text-xs text-danger">{errors.tags.message}</span>
+              )}
+              <span className="text-xs text-text-muted">
+                {formData.status === "published"
+                  ? "Mínimo 1 tag requerido para publicar. Separa múltiples tags con comas."
+                  : "Separa múltiples tags con comas. Opcional para borradores."}
+              </span>
             </label>
           </div>
         </div>

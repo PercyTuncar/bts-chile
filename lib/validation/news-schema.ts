@@ -79,10 +79,11 @@ export const newsFormSchema = z.object({
     .or(z.literal("")),
 
   // Imágenes (URLs, la validación de dimensiones se hace en el servidor)
-  featuredImageURL: z.string().url("URL de imagen hero inválida"),
-  seoImageSquareURL: z.string().url("URL de imagen cuadrada inválida").optional().or(z.literal("")),
-  ogImageURL: z.string().url("URL de imagen OG inválida").optional().or(z.literal("")),
-  twitterImageURL: z.string().url("URL de imagen Twitter inválida").optional().or(z.literal("")),
+  // Nota: Permiten string vacío porque las imágenes se suben después de la validación del form
+  featuredImageURL: z.string().optional().or(z.literal("")),
+  seoImageSquareURL: z.string().optional().or(z.literal("")),
+  ogImageURL: z.string().optional().or(z.literal("")),
+  twitterImageURL: z.string().optional().or(z.literal("")),
   imageAlt: z.string().min(1, "El texto alternativo es obligatorio").max(125, "Máximo 125 caracteres"),
 
   // Categoría y tags
@@ -93,7 +94,7 @@ export const newsFormSchema = z.object({
     "kpop",
     "army_chile",
   ] as const),
-  tags: z.array(z.string()).min(1, "Agrega al menos un tag").max(10, "Máximo 10 tags"),
+  tags: z.array(z.string()).max(10, "Máximo 10 tags").default([]),
 
   // Autor
   authorUid: z.string().min(1, "Autor obligatorio"),
@@ -109,9 +110,11 @@ export type NewsFormData = z.infer<typeof newsFormSchema>;
 
 // Schema para validación de publicación (más estricto que draft)
 export const newsPublishSchema = newsFormSchema.extend({
+  featuredImageURL: z.string().url("La imagen hero es obligatoria para publicar"),
   seoImageSquareURL: z.string().url("La imagen cuadrada 1:1 es obligatoria para publicar"),
   ogImageURL: z.string().url("La imagen Open Graph es obligatoria para publicar"),
   headline: z.string().min(1, "El headline es obligatorio para publicar").max(110),
+  tags: z.array(z.string()).min(1, "Agrega al menos un tag para publicar").max(10, "Máximo 10 tags"),
 }).refine(
   (data) => {
     // Si está publicado, debe tener todas las imágenes requeridas
@@ -120,13 +123,14 @@ export const newsPublishSchema = newsFormSchema.extend({
         data.featuredImageURL &&
         data.seoImageSquareURL &&
         data.ogImageURL &&
-        data.imageAlt
+        data.imageAlt &&
+        data.tags.length > 0
       );
     }
     return true;
   },
   {
-    message: "Para publicar se requieren: imagen hero, imagen cuadrada 1:1, imagen OG y texto alternativo",
+    message: "Para publicar se requieren: imagen hero, imagen cuadrada 1:1, imagen OG, texto alternativo y al menos 1 tag",
     path: ["status"],
   }
 );
