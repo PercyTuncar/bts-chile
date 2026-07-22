@@ -5,6 +5,9 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getPublishedNews } from "@/lib/firestore/news";
 import { buildBreadcrumbList, buildGraph, SITE_URL } from "@/lib/utils/seo";
 
+// Revalidar cada 60 segundos - ISR (Incremental Static Regeneration)
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: {
     absolute: "Noticias BTS Chile — Conciertos, Música y ARMY | btschile.com",

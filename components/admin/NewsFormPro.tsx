@@ -22,7 +22,6 @@ import { uploadImage } from "@/lib/storage";
 import { NEWS_CATEGORIES } from "@/lib/noticias/categories";
 import { newsFormSchema, newsPublishSchema, type NewsFormData } from "@/lib/validation/news-schema";
 import { validateNewsArticleLD } from "@/lib/seo/json-ld";
-import { notifyIndexNow } from "@/lib/seo/indexnow";
 import { cn } from "@/lib/utils/cn";
 import type { News, NewsCategory, NewsStatus } from "@/types";
 
@@ -237,10 +236,19 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
         readingTimeMinutes: readingTime,
       });
 
-      // Si se publicó, notificar a IndexNow
+      // Si se publicó, notificar a IndexNow via API route
       if (data.status === "published") {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.btschile.com";
-        await notifyIndexNow(`${siteUrl}/noticias/${data.slug}`);
+        try {
+          await fetch("/api/indexnow", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: `${siteUrl}/noticias/${data.slug}` }),
+          });
+        } catch (err) {
+          console.warn("Error notificando a IndexNow:", err);
+          // No bloquear el flujo si falla IndexNow
+        }
       }
 
       toastSuccess(
