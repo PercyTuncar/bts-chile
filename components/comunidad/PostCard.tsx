@@ -10,6 +10,7 @@ import { PollView } from "@/components/comunidad/PollView";
 import { PostContent } from "@/components/comunidad/PostContent";
 import { PostImage } from "@/components/comunidad/PostImage";
 import { ReactionPicker } from "@/components/comunidad/ReactionPicker";
+import { ShareButton } from "@/components/comunidad/ShareButton";
 import { AdminBadge, MembershipBadge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SmartImage } from "@/components/ui/SmartImage";
@@ -173,6 +174,10 @@ export function PostCard({ post }: { post: WithId<Post> }) {
           <MessageCircle className="h-4 w-4" aria-hidden />
           <span className="tabular-nums">{post.commentsCount}</span>
         </Link>
+        <ShareButton
+          url={`${typeof window !== 'undefined' ? window.location.origin : ''}/comunidad/${post.id}`}
+          text={`${post.content?.substring(0, 100)}...` || "Mira esta publicación de ARMY Chile"}
+        />
       </div>
     </GlassCard>
   );

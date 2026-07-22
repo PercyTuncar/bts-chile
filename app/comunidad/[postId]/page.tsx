@@ -7,8 +7,8 @@ import { CommentsSection } from "@/components/comunidad/CommentsSection";
 import { PollView } from "@/components/comunidad/PollView";
 import { PostContent } from "@/components/comunidad/PostContent";
 import { PostImage } from "@/components/comunidad/PostImage";
-import { PostDetailActions } from "@/components/comunidad/PostDetailActions";
 import { ReactionPicker } from "@/components/comunidad/ReactionPicker";
+import { ShareButton } from "@/components/comunidad/ShareButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdminBadge, MembershipBadge } from "@/components/ui/Badge";
 import { getPost } from "@/lib/firestore/posts";
@@ -175,9 +175,9 @@ export default async function PostPage({ params }: Params) {
           </div>
         )}
 
-        <div className="mt-5 flex flex-col gap-4 border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] pt-4">
+        <div className="mt-5 flex items-center justify-between border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] pt-4">
           <ReactionPicker postId={postId} counts={post.reactionCounts} />
-          <PostDetailActions postId={postId} shareUrl={url} shareText={`ARMY opina: ${headline}…`} authorUid={post.authorUid} />
+          <ShareButton url={url} text={`ARMY opina: ${headline}…`} />
         </div>
       </article>
 
