@@ -6,11 +6,11 @@ import { AlbumGallery } from "@/components/comunidad/AlbumGallery";
 import { CommentsSection } from "@/components/comunidad/CommentsSection";
 import { PollView } from "@/components/comunidad/PollView";
 import { PostContent } from "@/components/comunidad/PostContent";
+import { PostImage } from "@/components/comunidad/PostImage";
 import { PostDetailActions } from "@/components/comunidad/PostDetailActions";
 import { ReactionPicker } from "@/components/comunidad/ReactionPicker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdminBadge, MembershipBadge } from "@/components/ui/Badge";
-import { SmartImage } from "@/components/ui/SmartImage";
 import { getPost } from "@/lib/firestore/posts";
 import { CATEGORY_LABEL } from "@/lib/comunidad/reactions";
 import { formatRelative, toISOString } from "@/lib/utils/formatters";
@@ -171,7 +171,7 @@ export default async function PostPage({ params }: Params) {
 
         {post.imageURL && (
           <div className="mt-4">
-            <SmartImage src={post.imageURL} alt="" fill sizes="(max-width:768px) 100vw, 672px" />
+            <PostImage src={post.imageURL} alt={headline} />
           </div>
         )}
 
