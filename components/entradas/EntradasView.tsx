@@ -28,10 +28,35 @@ export function EntradasView({ zones }: { zones: ZoneData[] }) {
   const [quantity, setQuantity] = useState(1);
   const [installments, setInstallments] = useState(1);
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+  const [sheetDragOffset, setSheetDragOffset] = useState(0);
+  const sheetDragStartY = useRef<number | null>(null);
   const selectorRef = useRef<HTMLDivElement>(null);
 
   const selectedZone = zones.find((zone) => zone.zoneId === selectedZoneId) ?? null;
   const selectable = selectedZone && zoneStatus(selectedZone) !== "soldout";
+
+  function closeMobilePanel() {
+    setSheetDragOffset(0);
+    setMobilePanelOpen(false);
+  }
+
+  function handleSheetDragStart(event: React.PointerEvent<HTMLButtonElement>) {
+    sheetDragStartY.current = event.clientY;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handleSheetDragMove(event: React.PointerEvent<HTMLButtonElement>) {
+    if (sheetDragStartY.current === null) return;
+    setSheetDragOffset(Math.max(0, event.clientY - sheetDragStartY.current));
+  }
+
+  function handleSheetDragEnd(event: React.PointerEvent<HTMLButtonElement>) {
+    if (sheetDragStartY.current === null) return;
+    const distance = Math.max(0, event.clientY - sheetDragStartY.current);
+    sheetDragStartY.current = null;
+    setSheetDragOffset(0);
+    if (distance >= 96) closeMobilePanel();
+  }
 
   function handleSelect(zoneId: string) {
     setSelectedZoneId(zoneId);
@@ -85,9 +110,23 @@ export function EntradasView({ zones }: { zones: ZoneData[] }) {
 
           {mobilePanelOpen && (
             <div className="fixed inset-x-0 top-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 flex items-end bg-black/45 p-0 xl:hidden" role="dialog" aria-modal="true" aria-label="Detalle de la zona seleccionada">
-              <button type="button" className="absolute inset-0 cursor-default" aria-label="Cerrar detalle de zona" onClick={() => setMobilePanelOpen(false)} />
-              <div className="relative max-h-[88dvh] w-full overflow-y-auto rounded-t-[28px] bg-surface px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_40px_rgba(0,0,0,.28)] animate-[ticket-sheet-in_280ms_cubic-bezier(.32,.72,0,1)] motion-reduce:animate-none">
-                <button type="button" onClick={() => setMobilePanelOpen(false)} className="mx-auto mb-4 block h-1.5 w-12 rounded-full bg-[color-mix(in_srgb,var(--text)_20%,transparent)]" aria-label="Cerrar detalle de zona" />
+              <button type="button" className="absolute inset-0 cursor-default" aria-label="Cerrar detalle de zona" onClick={closeMobilePanel} />
+              <div
+                className="relative max-h-[88dvh] w-full overflow-y-auto rounded-t-[28px] bg-surface px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_40px_rgba(0,0,0,.28)] animate-[ticket-sheet-in_280ms_cubic-bezier(.32,.72,0,1)] motion-reduce:animate-none"
+                style={{ transform: sheetDragOffset ? `translateY(${sheetDragOffset}px)` : undefined }}
+              >
+                <button
+                  type="button"
+                  onClick={closeMobilePanel}
+                  onPointerDown={handleSheetDragStart}
+                  onPointerMove={handleSheetDragMove}
+                  onPointerUp={handleSheetDragEnd}
+                  onPointerCancel={handleSheetDragEnd}
+                  className="mx-auto mb-4 block touch-none p-3"
+                  aria-label="Arrastra hacia abajo para cerrar el detalle de zona"
+                >
+                  <span className="block h-1.5 w-12 rounded-full bg-[color-mix(in_srgb,var(--text)_20%,transparent)]" />
+                </button>
                 <TicketSelector zone={selectedZone} quantity={quantity} installments={installments} onQuantity={setQuantity} onInstallments={setInstallments} />
                 <div className="sticky bottom-0 z-10 mt-4 border-t border-[color-mix(in_srgb,var(--text)_10%,transparent)] bg-surface pt-3"><CartBar zone={selectedZone} quantity={quantity} installments={installments} eventDate={eventDate} /></div>
               </div>
