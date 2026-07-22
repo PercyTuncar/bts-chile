@@ -8,6 +8,7 @@ import { useState } from "react";
 import { AlbumGallery } from "@/components/comunidad/AlbumGallery";
 import { PollView } from "@/components/comunidad/PollView";
 import { PostContent } from "@/components/comunidad/PostContent";
+import { PostImage } from "@/components/comunidad/PostImage";
 import { ReactionPicker } from "@/components/comunidad/ReactionPicker";
 import { AdminBadge, MembershipBadge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -158,7 +159,7 @@ export function PostCard({ post }: { post: WithId<Post> }) {
 
       {post.imageURL && (
         <Link href={`/comunidad/${post.id}`} className="block">
-          <SmartImage src={post.imageURL} alt="" fill sizes="(max-width:768px) 100vw, 600px" />
+          <PostImage src={post.imageURL} alt={post.content || "Imagen del post"} />
         </Link>
       )}
 

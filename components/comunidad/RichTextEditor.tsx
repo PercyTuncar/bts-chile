@@ -231,7 +231,9 @@ export function RichTextEditor({
     extensions: [
       StarterKit.configure({ heading: false }),
       TextStyle,
-      Color,
+      Color.configure({
+        types: ['textStyle'],
+      }),
       Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: "noopener noreferrer nofollow", target: "_blank" } }),
     ],
     editorProps: {
