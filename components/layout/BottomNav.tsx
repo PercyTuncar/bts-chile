@@ -27,12 +27,14 @@ export function BottomNav() {
   const avatar =
     profile?.customPhotoURL || profile?.photoURL || firebaseUser?.photoURL || null;
   const profileActive = pathname.startsWith("/perfil");
+  const displayName = profile?.displayName || firebaseUser?.displayName || "Perfil";
+  const firstName = displayName.trim().split(/\s+/)[0] || "Perfil";
 
   return (
     <>
       <nav
         aria-label="Navegación móvil"
-        className="glass-nav fixed bottom-0 left-0 z-50 w-full border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] md:hidden"
+        className="fixed bottom-0 left-0 z-50 w-full border-t border-[color-mix(in_srgb,var(--text)_12%,transparent)] bg-[color-mix(in_srgb,var(--surface)_78%,transparent)] shadow-[0_-8px_24px_color-mix(in_srgb,var(--text)_10%,transparent)] backdrop-blur-[28px] backdrop-saturate-150 md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="flex items-center justify-around px-2 py-1.5">
@@ -78,14 +80,14 @@ export function BottomNav() {
                   </span>
                 )}
               </span>
-              <span>Perfil</span>
+              <span className="max-w-[4.5rem] truncate">{firstName}</span>
             </Link>
           ) : (
             <button type="button" onClick={openLogin} className={itemCls(false)}>
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white shadow-lg">
                 <LogIn className="h-4 w-4" aria-hidden />
               </span>
-              <span>Entrar</span>
+              <span>Ingresar</span>
             </button>
           )}
 

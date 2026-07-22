@@ -28,7 +28,7 @@ export const ENTRADAS_FAQ: FaqItem[] = [
   {
     question: "¿Cuándo es el concierto de BTS en Chile 2026?",
     answer:
-      "BTS se presenta el viernes 16 y sábado 17 de octubre de 2026 en el Estadio Nacional Julio Martínez Prádanos, Santiago de Chile, en el BTS WORLD TOUR ARIRANG.",
+      "BTS se presenta el miércoles 14, viernes 16 y sábado 17 de octubre de 2026 en el Estadio Nacional Julio Martínez Prádanos, Santiago de Chile, como parte del BTS WORLD TOUR ARIRANG.",
   },
   {
     question: "¿Qué zonas quedan disponibles para BTS Chile?",

@@ -29,7 +29,7 @@ function clampInt(value: string | undefined, min: number, max: number, fallback:
 }
 
 function parseDate(value: string | undefined): EventDate {
-  return value === "2026-10-16" || value === "2026-10-17" || value === "both"
+  return value === "2026-10-14" || value === "2026-10-16" || value === "2026-10-17" || value === "both"
     ? value
     : "both";
 }

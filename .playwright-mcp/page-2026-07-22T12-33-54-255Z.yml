@@ -1,0 +1,487 @@
+- generic [ref=e1]:
+  - link "Saltar al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#contenido"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "ARMY CHILE" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: 💜
+      - generic [ref=e14]:
+        - link "Notificaciones" [ref=e15] [cursor=pointer]:
+          - /url: /notificaciones
+        - link "Mensajes" [ref=e20] [cursor=pointer]:
+          - /url: /mensajes
+          - generic [ref=e23]: "+1"
+  - main [ref=e30]:
+    - region [ref=e31]:
+      - generic [ref=e32]:
+        - paragraph [ref=e33]: BTS Chile 2026
+        - heading "Entradas BTS Chile 2026 — Estadio Nacional" [level=1] [ref=e34]
+        - paragraph [ref=e35]:
+          - text: BTS WORLD TOUR "ARIRANG" IN SANTIAGO ·
+          - time [ref=e36]: "14"
+          - text: ","
+          - time [ref=e37]: "16"
+          - text: "y"
+          - time [ref=e38]: 17 de octubre de 2026
+        - timer "Cuenta regresiva hacia el concierto" [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: "84"
+            - generic [ref=e43]: Días
+          - generic [ref=e44]:
+            - generic [ref=e45]: "10"
+            - generic [ref=e46]: Horas
+          - generic [ref=e47]:
+            - generic [ref=e48]: "26"
+            - generic [ref=e49]: Min
+          - generic [ref=e50]:
+            - generic [ref=e51]: "05"
+            - generic [ref=e52]: Seg
+        - generic [ref=e53]:
+          - generic [ref=e54]: 100% Seguro
+          - generic [ref=e59]: Vendedor Verificado
+          - generic [ref=e63]: Pago en Cuotas
+    - region [ref=e66]:
+      - generic [ref=e68]:
+        - paragraph [ref=e69]: Antes de comprar
+        - heading "Información del evento" [level=2] [ref=e70]
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - term [ref=e74]: "Evento:"
+            - definition [ref=e77]: BTS WORLD TOUR "ARIRANG" IN SANTIAGO
+          - generic [ref=e78]:
+            - term [ref=e79]: "Fechas:"
+            - definition [ref=e82]:
+              - text: Miércoles
+              - time [ref=e83]: "14"
+              - text: ", Viernes"
+              - time [ref=e84]: "16"
+              - text: y Sábado
+              - time [ref=e85]: 17 de octubre de 2026
+          - generic [ref=e86]:
+            - term [ref=e87]: "Recinto:"
+            - definition [ref=e91]: Estadio Nacional Julio Martínez Prádanos
+          - generic [ref=e92]:
+            - term [ref=e93]: "Capacidad:"
+            - definition [ref=e98]: ~47,000 personas
+          - generic [ref=e99]:
+            - term [ref=e100]: "Dirección:"
+            - definition [ref=e104]: Av. Grecia 2001, Ñuñoa, Santiago
+        - figure [ref=e105]:
+          - img "Mapa de ubicación del Estadio Nacional Julio Martínez Prádanos en Ñuñoa, Santiago de Chile" [ref=e108]
+    - region [ref=e113]:
+      - generic [ref=e114]:
+        - paragraph [ref=e115]: Compra tus entradas
+        - heading "Zonas y precios" [level=2] [ref=e116]
+      - generic [ref=e117]:
+        - generic [ref=e118]:
+          - generic [ref=e123]:
+            - heading "Selecciona la fecha del concierto" [level=3] [ref=e124]
+            - paragraph [ref=e125]: Elige una fecha antes de seleccionar tu zona.
+          - radiogroup "Fecha del concierto" [ref=e127]:
+            - radio "Miércoles 14 Oct" [ref=e128]
+            - radio "Viernes 16 Oct" [ref=e129]
+            - radio "Sábado 17 Oct" [ref=e130]
+            - radio "Todas las fechas" [checked] [ref=e131]
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - paragraph [ref=e137]: Disponibilidad por zona
+            - generic "Leyenda de disponibilidad" [ref=e138]:
+              - generic [ref=e139]: Disponible
+              - generic [ref=e141]: Últimas entradas
+              - generic [ref=e143]: Agotado
+          - group "Mapa de zonas del Estadio Nacional para BTS Chile 2026" [ref=e146]:
+            - generic "Escenario" [ref=e149]: ESCENARIO
+            - generic [ref=e153]:
+              - button "Pacífico Medio, $1,784.00, Agotado" [disabled] [ref=e154]
+              - generic: "1"
+            - generic [ref=e155]:
+              - button "Cancha Pacífico, $991.00, Últimas entradas" [ref=e156] [cursor=pointer]
+              - generic: "2"
+            - generic [ref=e157]:
+              - button "Cancha Andes, $949.00, Últimas entradas" [pressed] [ref=e158] [cursor=pointer]
+              - generic: "3"
+            - generic [ref=e159]:
+              - button "Pacífico Alto, $892.00, Agotado" [disabled] [ref=e160]
+              - generic: "4"
+            - generic [ref=e161]:
+              - button "Pacífico Bajo, $734.00, Agotado" [disabled] [ref=e162]
+              - generic: "5"
+            - generic [ref=e163]:
+              - button "Movilidad Reducida, $734.00, Agotado" [disabled] [ref=e164]
+              - generic: "6"
+            - generic [ref=e165]:
+              - button "Andes Bajo Centro, $615.00, Agotado" [disabled] [ref=e166]
+              - generic: "7"
+            - generic [ref=e167]:
+              - button "Andes Bajo Norte, $555.00, Agotado" [disabled] [ref=e168]
+              - generic: "8"
+            - generic [ref=e169]:
+              - button "Andes Bajo Sur, $555.00, Agotado" [disabled] [ref=e170]
+              - generic: "9"
+            - generic [ref=e171]:
+              - button "Andes Alto Centro, $535.00, Agotado" [disabled] [ref=e172]
+              - generic: "10"
+            - generic [ref=e173]:
+              - button "Andes Alto Norte, $496.00, Agotado" [disabled] [ref=e174]
+              - generic: "11"
+            - generic [ref=e175]:
+              - button "Andes Alto Sur, $496.00, Agotado" [disabled] [ref=e176]
+              - generic: "12"
+            - generic [ref=e177]:
+              - button "Galería Norte, $377.00, Agotado" [disabled] [ref=e178]
+              - generic: "13"
+            - generic [ref=e179]:
+              - button "Galería Sur, $377.00, Agotado" [disabled] [ref=e180]
+              - generic: "14"
+            - generic [ref=e181]:
+              - button "Pacífico Lateral Norte, $299.00, Agotado" [disabled] [ref=e182]
+              - generic: "15"
+            - generic [ref=e183]:
+              - button "Pacífico Lateral Sur, $299.00, Agotado" [disabled] [ref=e184]
+              - generic: "16"
+        - region "Lista de zonas y precios" [ref=e185]:
+          - generic [ref=e186]:
+            - generic [ref=e187]:
+              - paragraph [ref=e188]: Elige tu zona
+              - paragraph [ref=e189]: Selecciona una zona disponible para continuar.
+            - generic [ref=e190]:
+              - generic [ref=e194]: Ordenar zonas
+              - combobox "Ordenar zonas" [ref=e195]:
+                - 'option "Ordenar por: Orden original" [selected]'
+                - 'option "Ordenar por: Precio menor"'
+                - 'option "Ordenar por: Precio mayor"'
+                - 'option "Ordenar por: Disponibilidad"'
+          - generic [ref=e616]:
+            - article [ref=e617]:
+              - generic [ref=e618]:
+                - generic [ref=e619]:
+                  - paragraph [ref=e620]: Zona 1
+                  - heading "Pacífico Medio" [level=3] [ref=e621]
+                  - generic [ref=e622]: Agotado
+                - paragraph [ref=e624]: $1,784.00
+            - article [ref=e625]:
+              - generic [ref=e626]:
+                - generic [ref=e627]:
+                  - paragraph [ref=e628]: Zona 2
+                  - heading "Cancha Pacífico" [level=3] [ref=e629]
+                  - generic [ref=e630]: Últimas entradas
+                - paragraph [ref=e632]: $991.00
+              - button "Agregar" [ref=e633]
+            - article [ref=e635]:
+              - generic [ref=e636]:
+                - generic [ref=e637]:
+                  - paragraph [ref=e638]: Zona 3
+                  - heading "Cancha Andes" [level=3] [ref=e639]
+                  - generic [ref=e640]: Últimas entradas
+                - paragraph [ref=e642]: $949.00
+              - button "Seleccionada" [ref=e643]
+            - article [ref=e646]:
+              - generic [ref=e647]:
+                - generic [ref=e648]:
+                  - paragraph [ref=e649]: Zona 4
+                  - heading "Pacífico Alto" [level=3] [ref=e650]
+                  - generic [ref=e651]: Agotado
+                - paragraph [ref=e653]: $892.00
+            - article [ref=e654]:
+              - generic [ref=e655]:
+                - generic [ref=e656]:
+                  - paragraph [ref=e657]: Zona 5
+                  - heading "Pacífico Bajo" [level=3] [ref=e658]
+                  - generic [ref=e659]: Agotado
+                - paragraph [ref=e661]: $734.00
+            - article [ref=e662]:
+              - generic [ref=e663]:
+                - generic [ref=e664]:
+                  - paragraph [ref=e665]: Zona 6
+                  - heading "Movilidad Reducida" [level=3] [ref=e666]
+                  - generic [ref=e667]: Agotado
+                - paragraph [ref=e669]: $734.00
+            - article [ref=e670]:
+              - generic [ref=e671]:
+                - generic [ref=e672]:
+                  - paragraph [ref=e673]: Zona 7
+                  - heading "Andes Bajo Centro" [level=3] [ref=e674]
+                  - generic [ref=e675]: Agotado
+                - paragraph [ref=e677]: $615.00
+            - article [ref=e678]:
+              - generic [ref=e679]:
+                - generic [ref=e680]:
+                  - paragraph [ref=e681]: Zona 8
+                  - heading "Andes Bajo Norte" [level=3] [ref=e682]
+                  - generic [ref=e683]: Agotado
+                - paragraph [ref=e685]: $555.00
+            - article [ref=e686]:
+              - generic [ref=e687]:
+                - generic [ref=e688]:
+                  - paragraph [ref=e689]: Zona 9
+                  - heading "Andes Bajo Sur" [level=3] [ref=e690]
+                  - generic [ref=e691]: Agotado
+                - paragraph [ref=e693]: $555.00
+            - article [ref=e694]:
+              - generic [ref=e695]:
+                - generic [ref=e696]:
+                  - paragraph [ref=e697]: Zona 10
+                  - heading "Andes Alto Centro" [level=3] [ref=e698]
+                  - generic [ref=e699]: Agotado
+                - paragraph [ref=e701]: $535.00
+            - article [ref=e702]:
+              - generic [ref=e703]:
+                - generic [ref=e704]:
+                  - paragraph [ref=e705]: Zona 11
+                  - heading "Andes Alto Norte" [level=3] [ref=e706]
+                  - generic [ref=e707]: Agotado
+                - paragraph [ref=e709]: $496.00
+            - article [ref=e710]:
+              - generic [ref=e711]:
+                - generic [ref=e712]:
+                  - paragraph [ref=e713]: Zona 12
+                  - heading "Andes Alto Sur" [level=3] [ref=e714]
+                  - generic [ref=e715]: Agotado
+                - paragraph [ref=e717]: $496.00
+            - article [ref=e718]:
+              - generic [ref=e719]:
+                - generic [ref=e720]:
+                  - paragraph [ref=e721]: Zona 13
+                  - heading "Galería Norte" [level=3] [ref=e722]
+                  - generic [ref=e723]: Agotado
+                - paragraph [ref=e725]: $377.00
+            - article [ref=e726]:
+              - generic [ref=e727]:
+                - generic [ref=e728]:
+                  - paragraph [ref=e729]: Zona 14
+                  - heading "Galería Sur" [level=3] [ref=e730]
+                  - generic [ref=e731]: Agotado
+                - paragraph [ref=e733]: $377.00
+            - article [ref=e734]:
+              - generic [ref=e735]:
+                - generic [ref=e736]:
+                  - paragraph [ref=e737]: Zona 15
+                  - heading "Pacífico Lateral Norte" [level=3] [ref=e738]
+                  - generic [ref=e739]: Agotado
+                - paragraph [ref=e741]: $299.00
+            - article [ref=e742]:
+              - generic [ref=e743]:
+                - generic [ref=e744]:
+                  - paragraph [ref=e745]: Zona 16
+                  - heading "Pacífico Lateral Sur" [level=3] [ref=e746]
+                  - generic [ref=e747]: Agotado
+                - paragraph [ref=e749]: $299.00
+        - button "Cancha Andes $949.00 por entrada Ver detalle" [active] [ref=e750]:
+          - generic [ref=e396]:
+            - generic [ref=e397]: Cancha Andes
+            - generic [ref=e398]: $949.00 por entrada
+          - generic [ref=e399]: Ver detalle
+        - dialog "Detalle de la zona seleccionada" [ref=e776]:
+          - button "Cerrar detalle de zona" [ref=e777]
+          - generic [ref=e778]:
+            - button "Cerrar detalle de zona" [ref=e779]
+            - generic [ref=e780]:
+              - generic [ref=e781]:
+                - paragraph [ref=e782]: Zona seleccionada
+                - generic [ref=e783]:
+                  - heading "Cancha Andes" [level=3] [ref=e784]
+                  - paragraph [ref=e785]: $949.00
+              - generic [ref=e786]:
+                - paragraph [ref=e787]: Cantidad (máx. 3)
+                - generic "Cantidad de entradas" [ref=e788]:
+                  - button "Reducir cantidad" [disabled] [ref=e789]
+                  - generic [ref=e791]: "1"
+                  - button "Aumentar cantidad" [ref=e792]
+              - generic [ref=e794]:
+                - paragraph [ref=e795]: Cuotas
+                - radiogroup "Número de cuotas" [ref=e796]:
+                  - radio "1 cuota $949.00 c/u" [checked] [ref=e797]:
+                    - generic [ref=e798]: 1 cuota
+                    - generic [ref=e799]: $949.00 c/u
+                  - radio "2 cuotas $474.50 c/u" [ref=e800]:
+                    - generic [ref=e801]: 2 cuotas
+                    - generic [ref=e802]: $474.50 c/u
+                  - radio "3 cuotas $316.33 c/u" [ref=e803]:
+                    - generic [ref=e804]: 3 cuotas
+                    - generic [ref=e805]: $316.33 c/u
+              - generic [ref=e806]:
+                - generic [ref=e807]:
+                  - generic [ref=e808]: Subtotal (1 ×)
+                  - generic [ref=e809]: $949.00
+                - paragraph [ref=e810]: La comisión de servicio (10%) se calcula en el checkout; las cuotas se aplican sobre el total.
+              - generic [ref=e811]:
+                - generic [ref=e812]: 100% Seguro
+                - generic [ref=e816]: Vendedor Verificado
+                - generic [ref=e820]: Pago en Cuotas
+            - generic [ref=e826]:
+              - generic [ref=e827]: $949.00
+              - link "Comprar ahora" [ref=e833] [cursor=pointer]:
+                - /url: /entradas/comprar?zoneId=cancha-andes&qty=1&installments=1&date=both
+    - region [ref=e402]:
+      - generic [ref=e403]:
+        - paragraph [ref=e404]: Resuelve tus dudas
+        - heading "Preguntas frecuentes" [level=2] [ref=e405]
+      - generic [ref=e406]:
+        - group [ref=e407]:
+          - generic "¿Cómo compro entradas para BTS Chile 2026 en btschile.com?" [ref=e408] [cursor=pointer]:
+            - text: ¿Cómo compro entradas para BTS Chile 2026 en btschile.com?
+            - generic [ref=e409]: +
+        - group [ref=e410]:
+          - generic "¿Son seguras las entradas de btschile.com?" [ref=e411] [cursor=pointer]:
+            - text: ¿Son seguras las entradas de btschile.com?
+            - generic [ref=e412]: +
+        - group [ref=e413]:
+          - generic "¿Puedo comprar entradas BTS Chile en cuotas?" [ref=e414] [cursor=pointer]:
+            - text: ¿Puedo comprar entradas BTS Chile en cuotas?
+            - generic [ref=e415]: +
+        - group [ref=e416]:
+          - generic "¿Cuánto cuestan las entradas para BTS en Santiago?" [ref=e417] [cursor=pointer]:
+            - text: ¿Cuánto cuestan las entradas para BTS en Santiago?
+            - generic [ref=e418]: +
+        - group [ref=e419]:
+          - generic "¿Cuándo es el concierto de BTS en Chile 2026?" [ref=e420] [cursor=pointer]:
+            - text: ¿Cuándo es el concierto de BTS en Chile 2026?
+            - generic [ref=e421]: +
+        - group [ref=e422]:
+          - generic "¿Qué zonas quedan disponibles para BTS Chile?" [ref=e423] [cursor=pointer]:
+            - text: ¿Qué zonas quedan disponibles para BTS Chile?
+            - generic [ref=e424]: +
+        - group [ref=e425]:
+          - generic "¿Cómo me llegan las entradas de BTS Chile?" [ref=e426] [cursor=pointer]:
+            - text: ¿Cómo me llegan las entradas de BTS Chile?
+            - generic [ref=e427]: +
+        - group [ref=e428]:
+          - generic "¿Puedo comprar entradas BTS Chile sin membresía ARMY?" [ref=e429] [cursor=pointer]:
+            - text: ¿Puedo comprar entradas BTS Chile sin membresía ARMY?
+            - generic [ref=e430]: +
+    - region [ref=e431]:
+      - generic [ref=e432]:
+        - heading "¿Quieres saber si aparecen más entradas?" [level=2] [ref=e437]
+        - paragraph [ref=e438]: Activa alertas 💜
+        - generic [ref=e440]:
+          - textbox "Correo electrónico" [ref=e441]:
+            - /placeholder: tu@email.com
+          - button "Suscribirme" [ref=e442]
+    - article [ref=e443]:
+      - generic [ref=e444]:
+        - generic [ref=e445]:
+          - 'heading "Entradas BTS Chile 2026: BTS en Santiago en el Estadio Nacional" [level=2] [ref=e446]'
+          - generic [ref=e447]:
+            - paragraph [ref=e448]: El ARMY chileno tiene una cita imperdible. El BTS World Tour ARIRANG 2026 aterriza en Santiago con tres fechas en el mítico Estadio Nacional Julio Martínez Prádanos, en la comuna de Ñuñoa. Si estás buscando entradas BTS Chile 2026 para ver en vivo a RM, Jin, Suga, J-Hope, Jimin, V y Jung Kook, aquí tienes toda la información sobre el recinto, el transporte y cómo prepararte para el gran día.
+            - paragraph [ref=e449]: BTS, la banda surcoreana surgida de BigHit Music (hoy HYBE), vuelve a Latinoamérica con un espectáculo que promete emocionar a uno de los fandoms más fieles del continente. Chile, que ya ha recibido a la banda en el pasado, se prepara para tres noches inolvidables.
+        - region [ref=e450]:
+          - 'heading "El Estadio Nacional: el Coloso de Ñuñoa" [level=3] [ref=e451]'
+          - generic [ref=e452]:
+            - paragraph [ref=e453]: El Estadio Nacional Julio Martínez Prádanos, conocido cariñosamente como el "Coloso de Ñuñoa", es el principal recinto deportivo de Chile. Se ubica dentro del Parque Deportivo Estadio Nacional, un complejo de cerca de 64 hectáreas en la comuna de Ñuñoa, en Av. Grecia 2001, Santiago. Es el estadio más grande del país, con una capacidad oficial de aproximadamente 48.665 espectadores en su configuración deportiva.
+            - paragraph [ref=e454]: Además de ser la casa de la Roja, el Estadio Nacional es el gran escenario de los conciertos masivos en Chile, habiendo recibido a numerosos artistas internacionales de primer nivel. Su ubicación central y su excelente conexión de transporte lo convierten en el lugar ideal para un evento de la magnitud del BTS ARIRANG 2026 en Santiago.
+        - region [ref=e455]:
+          - heading "Cómo llegar al Estadio Nacional en Metro" [level=3] [ref=e456]
+          - paragraph [ref=e457]: Una de las grandes ventajas del recinto es que cuenta con su propia estación de Metro, diseñada para grandes flujos de personas.
+          - list [ref=e458]:
+            - listitem [ref=e459]:
+              - strong [ref=e460]: "Metro Línea 6 (morada):"
+              - text: la estación Estadio Nacional te deja prácticamente en la puerta del recinto. Se ubica en la Av. Pedro de Valdivia a la altura de Av. Grecia, con salidas directas hacia el estadio. Es la opción más cómoda y rápida.
+            - listitem [ref=e461]:
+              - strong [ref=e462]: "Metro Línea 3:"
+              - text: puedes usar la Línea 3 y combinar hacia la Línea 6 para acercarte al sector de Ñuñoa. La red de Metro de Santiago está muy interconectada, lo que facilita el acceso desde casi cualquier punto de la ciudad.
+            - listitem [ref=e463]:
+              - strong [ref=e464]: "Combinaciones útiles:"
+              - text: la Línea 6 conecta con la Línea 1 en Los Leones, con la Línea 3 en Ñuñoa y con la Línea 5 en Ñuble, entre otras. Desde el centro, una ruta recomendada es tomar la Línea 5 y cambiar a la Línea 6 en Ñuble.
+          - paragraph [ref=e465]: También hay recorridos de buses de la Red Metropolitana de Movilidad que circulan por Av. Grecia y Av. Pedro de Valdivia. Si vienes en auto, considera que el estacionamiento es limitado y las calles del entorno se saturan; el Metro sigue siendo la mejor alternativa.
+        - region [ref=e466]:
+          - heading "El entorno y la ciudad de Santiago" [level=3] [ref=e467]
+          - paragraph [ref=e468]: Ñuñoa es una de las comunas más queridas de Santiago, con ambiente residencial, plazas, cafés y una vida cultural activa. Alrededor del estadio encontrarás el Museo Patrimonial del Estadio Nacional, el velódromo y otras instalaciones deportivas. Santiago, la capital chilena rodeada por la cordillera de los Andes, ofrece atractivos como el cerro San Cristóbal, el barrio Lastarria y el barrio Bellavista, ideales para complementar tu visita.
+        - region [ref=e469]:
+          - heading "Fechas del BTS ARIRANG 2026 en Santiago" [level=3] [ref=e470]
+          - paragraph [ref=e471]: "El BTS en Santiago tendrá tres fechas confirmadas en el Estadio Nacional:"
+          - list [ref=e472]:
+            - listitem [ref=e473]:
+              - time [ref=e474]: Miércoles 14 de octubre de 2026
+            - listitem [ref=e475]:
+              - time [ref=e476]: Viernes 16 de octubre de 2026
+            - listitem [ref=e477]:
+              - time [ref=e478]: Sábado 17 de octubre de 2026
+          - paragraph [ref=e479]: Sobre las canciones, el ARMY sueña con escuchar clásicos como "Idol", "Boy With Luv", "Dynamite" o "Spring Day", junto a posibles interpretaciones en solitario. Conviene recordar que el setlist definitivo no ha sido oficializado por HYBE, así que todo lo que se comenta al respecto pertenece al terreno de la expectativa y el rumor, parte natural de la ilusión antes de la gira.
+        - region [ref=e480]:
+          - heading "Consejos para asistir al concierto" [level=3] [ref=e481]
+          - list [ref=e482]:
+            - listitem [ref=e483]:
+              - strong [ref=e484]: "Llega con anticipación:"
+              - text: las puertas abren varias horas antes del show. Llegar temprano facilita el ingreso y te da tiempo para ubicarte tranquilo.
+            - listitem [ref=e485]:
+              - strong [ref=e486]: "Qué llevar:"
+              - text: tu entrada, carnet de identidad, agua, una casaca ligera (octubre en Santiago tiene noches frescas) y tu ARMY Bomb para sumarte al mar de luces.
+            - listitem [ref=e487]:
+              - strong [ref=e488]: "Comunidad ARMY:"
+              - text: el fandom chileno es reconocido por su organización y calidez. Son habituales los proyectos de fans, el intercambio de "photocards" y las coreografías coordinadas por tribuna.
+            - listitem [ref=e489]:
+              - strong [ref=e490]: "Seguridad:"
+              - text: cuida tus pertenencias y sigue las indicaciones del personal para disfrutar de una jornada segura.
+          - paragraph [ref=e491]: Ver a BTS en Chile en el Estadio Nacional será un recuerdo para toda la vida. Organiza tu ruta en Metro Línea 6, prepara tu ARMY Bomb y vive el BTS World Tour ARIRANG 2026 en Santiago junto a miles de fans.
+  - contentinfo [ref=e492]:
+    - generic [ref=e493]:
+      - generic [ref=e494]:
+        - link "btschile.com" [ref=e495] [cursor=pointer]:
+          - /url: /
+          - text: btschile.com
+          - generic [ref=e496]: 💜
+        - paragraph [ref=e497]: La comunidad oficial de ARMY en Chile. Entradas verificadas, noticias, tienda y membresía ARMY Boom v4.
+        - list [ref=e498]:
+          - listitem [ref=e499]:
+            - link "BTS Chile en Instagram" [ref=e500] [cursor=pointer]:
+              - /url: https://www.instagram.com/btschile
+              - text: Instagram
+          - listitem [ref=e501]:
+            - link "BTS Chile en Twitter" [ref=e502] [cursor=pointer]:
+              - /url: https://twitter.com/btschile
+              - text: Twitter
+          - listitem [ref=e503]:
+            - link "BTS Chile en Facebook" [ref=e504] [cursor=pointer]:
+              - /url: https://www.facebook.com/btschile
+              - text: Facebook
+          - listitem [ref=e505]:
+            - link "BTS Chile en TikTok" [ref=e506] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@btschile
+              - text: TikTok
+          - listitem [ref=e507]:
+            - link "BTS Chile en YouTube" [ref=e508] [cursor=pointer]:
+              - /url: https://www.youtube.com/@btschile
+              - text: YouTube
+      - navigation "Enlaces del sitio" [ref=e509]:
+        - heading "Explora" [level=2] [ref=e510]
+        - list [ref=e511]:
+          - listitem [ref=e512]:
+            - link "Inicio — BTS Chile" [ref=e513] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e514]:
+            - link "Entradas BTS Chile 2026" [ref=e515] [cursor=pointer]:
+              - /url: /entradas
+          - listitem [ref=e516]:
+            - link "Noticias BTS Chile" [ref=e517] [cursor=pointer]:
+              - /url: /noticias
+          - listitem [ref=e518]:
+            - link "Tienda BTS Chile" [ref=e519] [cursor=pointer]:
+              - /url: /tienda
+          - listitem [ref=e520]:
+            - link "Comunidad ARMY Chile" [ref=e521] [cursor=pointer]:
+              - /url: /comunidad
+          - listitem [ref=e522]:
+            - link "Membresía ARMY Boom v4" [ref=e523] [cursor=pointer]:
+              - /url: /membresia
+      - generic [ref=e524]:
+        - heading "Newsletter ARMY" [level=2] [ref=e525]
+        - paragraph [ref=e526]: Recibe novedades de entradas y noticias 💜
+        - generic [ref=e527]:
+          - textbox "Correo electrónico" [ref=e528]:
+            - /placeholder: tu@email.com
+          - button "Suscribirme" [ref=e529]
+    - generic [ref=e530]: © 2026 BTS Chile · Comunidad de fans · "Purple you, ARMY Chile 💜"
+  - navigation "Navegación móvil" [ref=e751]:
+    - generic [ref=e752]:
+      - link "Inicio" [ref=e753] [cursor=pointer]:
+        - /url: /
+      - link "Noticias" [ref=e758] [cursor=pointer]:
+        - /url: /noticias
+      - button "Entrar" [ref=e763]
+      - link "Entradas" [ref=e769] [cursor=pointer]:
+        - /url: /entradas
+      - button "Más" [ref=e773]
+  - button "Open Next.js Dev Tools" [ref=e536] [cursor=pointer]
+  - alert [ref=e540]

@@ -77,7 +77,7 @@ export type StoreOrderStatus =
   | "delivered"
   | "cancelled";
 
-export type EventDate = "2026-10-16" | "2026-10-17" | "both";
+export type EventDate = "2026-10-14" | "2026-10-16" | "2026-10-17" | "both";
 
 export type ReviewStatus = "pending" | "approved" | "rejected";
 

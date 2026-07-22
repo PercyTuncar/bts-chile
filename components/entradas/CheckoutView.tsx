@@ -23,17 +23,19 @@ const PAYMENT_METHODS: {
   label: string;
   online: boolean;
   desc: string;
+  disabled?: boolean;
 }[] = [
   { key: "paypal", label: "PayPal", online: true, desc: "Link de pago seguro por zona." },
-  { key: "mercadopago", label: "Mercado Pago", online: true, desc: "Link de pago directo." },
-  { key: "transfer", label: "Transferencia Bancaria", online: false, desc: "Te mostramos los datos bancarios." },
-  { key: "efectivo", label: "Efectivo (Khipu / CajaVecina)", online: false, desc: "Instrucciones de pago en efectivo." },
+  { key: "mercadopago", label: "Mercado Pago", online: true, desc: "Link de pago directo.", disabled: true },
+  { key: "transfer", label: "Transferencia Bancaria", online: false, desc: "Te mostramos los datos bancarios.", disabled: true },
+  { key: "efectivo", label: "Efectivo (Khipu / CajaVecina)", online: false, desc: "Instrucciones de pago en efectivo.", disabled: true },
 ];
 
 const EVENT_DATE_LABEL: Record<EventDate, string> = {
-  "2026-10-16": "Viernes 16 de Octubre, 2026",
-  "2026-10-17": "Sábado 17 de Octubre, 2026",
-  both: "Ambas fechas (16 y 17 de Octubre, 2026)",
+  "2026-10-14": "Miércoles 14 de octubre de 2026",
+  "2026-10-16": "Viernes 16 de octubre de 2026",
+  "2026-10-17": "Sábado 17 de octubre de 2026",
+  both: "Todas las fechas (14, 16 y 17 de octubre de 2026)",
 };
 
 function paymentLinkKey(method: PaymentMethod, installments: number): string {
@@ -94,9 +96,10 @@ export function CheckoutView({
   }
 
   const resolvedLink = method ? (paymentLinks[paymentLinkKey(method, installments) as keyof TicketPaymentLinks] ?? "") : "";
+  const canContinueToConfirmation = method === "paypal" && Boolean(resolvedLink);
 
   async function handlePlaceOrder() {
-    if (!firebaseUser || !method) return;
+    if (!firebaseUser || method !== "paypal" || !resolvedLink) return;
     const buyer = getValues();
     setPlacing(true);
     try {
@@ -221,16 +224,19 @@ export function CheckoutView({
               <button
                 key={m.key}
                 type="button"
+                disabled={m.disabled}
                 onClick={() => setMethod(m.key)}
-                className={`flex items-center justify-between rounded-2xl border p-4 text-left transition-colors ${
+                className={`flex items-center justify-between rounded-2xl border p-4 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                   method === m.key
                     ? "border-brand bg-brand-soft"
-                    : "border-[color-mix(in_srgb,var(--text)_12%,transparent)] hover:border-brand"
+                    : "border-[color-mix(in_srgb,var(--text)_12%,transparent)] hover:border-brand disabled:hover:border-[color-mix(in_srgb,var(--text)_12%,transparent)]"
                 }`}
               >
                 <span>
                   <span className="font-medium">{m.label}</span>
-                  <span className="block text-sm text-text-muted">{m.desc}</span>
+                  <span className="block text-sm text-text-muted">
+                    {m.disabled ? "Próximamente disponible." : m.desc}
+                  </span>
                 </span>
                 <span
                   className={`h-5 w-5 rounded-full border-2 ${
@@ -240,16 +246,16 @@ export function CheckoutView({
                 />
               </button>
             ))}
-            {method && PAYMENT_METHODS.find((m) => m.key === method)?.online && !resolvedLink && (
+            {method === "paypal" && !resolvedLink && (
               <p className="text-sm text-warning">
-                Esta zona aún no tiene link de pago configurado; el admin te contactará tras el pedido.
+                PayPal aún no tiene un enlace de pago configurado para esta zona y número de cuotas.
               </p>
             )}
             <div className="flex gap-3">
               <PillButton variant="secondary" onClick={() => setStep(1)}>
                 Atrás
               </PillButton>
-              <PillButton fullWidth disabled={!method} onClick={() => setStep(3)}>
+              <PillButton fullWidth disabled={!canContinueToConfirmation} onClick={() => setStep(3)}>
                 Continuar
               </PillButton>
             </div>
@@ -267,8 +273,8 @@ export function CheckoutView({
                 className="mt-1 h-5 w-5 accent-[var(--brand)]"
               />
               <span>
-                Entiendo que esta es una venta de mercado secundario y que las entradas serán
-                entregadas vía email dentro de 24-48 horas hábiles tras confirmar el pago.
+             Tras confirmar el pago entiendo que esta es una venta de mercado secundario y que las entradas serán
+                entregadas vía QUENTRO dentro de los últimos 30 hábiles previos al evento. No hay reembolsos ni cambios de fecha.
               </span>
             </label>
             <div className="flex gap-3">

@@ -16,7 +16,7 @@ export interface ZoneData {
   mapCoordinates: { x: number; y: number; width: number; height: number };
 }
 
-const BOTH: EventDate[] = ["2026-10-16", "2026-10-17", "both"];
+const BOTH: EventDate[] = ["2026-10-14", "2026-10-16", "2026-10-17", "both"];
 
 export const DEFAULT_ZONES: ZoneData[] = [
   { zoneId: "pacifico-medio", zoneName: "Pacífico Medio", zoneNumber: 1, priceUSD: 1784, stock: 0, isActive: true, isSoldOut: true, description: "Vista frontal privilegiada, al centro de Pacífico.", availableDates: BOTH, mapCoordinates: { x: 40, y: 20, width: 40, height: 9 } },
