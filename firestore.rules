@@ -122,9 +122,12 @@ service cloud.firestore {
       allow create: if request.auth != null
         && (membership() != 'free' || isAdmin())
         && (request.resource.data.status == 'pending' || isAdmin());
+      // Update: admin puede cambiar cualquier campo; usuarios pueden actualizar su post
+      // (cambios de contenido van a pendingEdit para revisión, excepto admin que edita directo)
       allow update: if isAdmin()
         || (request.auth.uid == resource.data.authorUid
-            && request.resource.data.status == resource.data.status);
+            && request.resource.data.status == resource.data.status
+            && request.resource.data.authorUid == resource.data.authorUid);
       // Eliminar: el autor puede eliminar su propio post, el admin puede eliminar cualquier post
       allow delete: if request.auth != null
         && (request.auth.uid == resource.data.authorUid || isAdmin());

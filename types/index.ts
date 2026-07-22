@@ -272,6 +272,23 @@ export interface Post {
   createdAt: Timestamp;
   approvedAt: Timestamp | null;
   approvedBy: string | null;
+  // Edición pendiente (solo usuarios no-admin; admin edita directo sin revisión)
+  pendingEdit?: PendingPostEdit | null;
+  editedAt?: Timestamp | null; // última vez que se editó (aprobado)
+}
+
+/** Edición pendiente de un post — almacenada en el campo pendingEdit del post */
+export interface PendingPostEdit {
+  content: string;
+  richContent: string | null;
+  imageURL: string | null;
+  images: string[] | null;
+  category: PostCategory;
+  submittedAt: Timestamp;
+  reviewedAt?: Timestamp | null;
+  reviewedBy?: string | null;
+  status: "pending" | "approved" | "rejected";
+  rejectionReason?: string | null;
 }
 
 export interface Reaction {

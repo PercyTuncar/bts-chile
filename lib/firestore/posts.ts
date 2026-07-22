@@ -124,6 +124,107 @@ export async function deletePost(postId: string): Promise<void> {
   await deleteDoc(postDoc(postId));
 }
 
+/** Envía una edición de post para revisión (usuarios) o aplica directo (admin). */
+export async function submitPostEdit(
+  postId: string,
+  editorUid: string,
+  isAdmin: boolean,
+  updates: {
+    content: string;
+    richContent: string | null;
+    imageURL: string | null;
+    images: string[] | null;
+    category: PostCategory;
+  },
+): Promise<void> {
+  if (isAdmin) {
+    // Admin edita directo sin revisión
+    await setDoc(
+      postDoc(postId),
+      {
+        ...updates,
+        editedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+  } else {
+    // Usuario normal: guarda en pendingEdit para revisión admin
+    await setDoc(
+      postDoc(postId),
+      {
+        pendingEdit: {
+          ...updates,
+          submittedAt: serverTimestamp(),
+          status: "pending",
+        },
+      },
+      { merge: true },
+    );
+  }
+}
+
+/** Aprueba o rechaza una edición pendiente (admin). */
+export async function reviewPostEdit(
+  postId: string,
+  adminUid: string,
+  approve: boolean,
+  rejectionReason?: string,
+): Promise<void> {
+  const postSnap = await getDoc(postDoc(postId));
+  if (!postSnap.exists()) throw new Error("Post no encontrado");
+
+  const post = postSnap.data();
+  const pendingEdit = post.pendingEdit;
+
+  if (!pendingEdit || pendingEdit.status !== "pending") {
+    throw new Error("No hay edición pendiente");
+  }
+
+  if (approve) {
+    // Aplicar los cambios del pendingEdit al post
+    await setDoc(
+      postDoc(postId),
+      {
+        content: pendingEdit.content,
+        richContent: pendingEdit.richContent,
+        imageURL: pendingEdit.imageURL,
+        images: pendingEdit.images,
+        category: pendingEdit.category,
+        editedAt: serverTimestamp(),
+        pendingEdit: null, // Limpiar pendingEdit
+      },
+      { merge: true },
+    );
+  } else {
+    // Rechazar: marcar el pendingEdit como rechazado
+    await setDoc(
+      postDoc(postId),
+      {
+        pendingEdit: {
+          ...pendingEdit,
+          status: "rejected",
+          rejectionReason: rejectionReason ?? "No aprobado",
+          reviewedAt: serverTimestamp(),
+          reviewedBy: adminUid,
+        },
+      },
+      { merge: true },
+    );
+  }
+}
+
+/** Obtiene posts con ediciones pendientes (admin). */
+export async function getPostsWithPendingEdits(max = 100): Promise<WithId<Post>[]> {
+  const q = query(
+    postsCol,
+    where("pendingEdit.status", "==", "pending"),
+    orderBy("pendingEdit.submittedAt", "desc"),
+    fbLimit(max),
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+}
+
 /** Query del feed público (aprobados, fecha desc) para onSnapshot en vivo. §8.1 */
 export function feedQuery(
   category: PostCategory | "all",

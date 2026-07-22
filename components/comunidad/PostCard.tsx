@@ -29,6 +29,8 @@ export function PostCard({ post }: { post: WithId<Post> }) {
 
   const canDelete = currentUserIsAdmin || firebaseUser?.uid === post.authorUid;
   const canEdit = firebaseUser?.uid === post.authorUid;
+  const hasPendingEdit = post.pendingEdit?.status === "pending";
+  const editRejected = post.pendingEdit?.status === "rejected";
 
   async function handleDelete() {
     if (!window.confirm("¿Eliminar esta publicación? Esta acción no se puede deshacer.")) return;
@@ -54,6 +56,22 @@ export function PostCard({ post }: { post: WithId<Post> }) {
           "aurora ring-1 ring-[color-mix(in_srgb,var(--brand)_45%,transparent)] shadow-[0_10px_36px_color-mix(in_srgb,var(--brand)_18%,transparent)]",
       )}
     >
+      {/* Indicador de edición pendiente o rechazada */}
+      {hasPendingEdit && (
+        <div className="rounded-lg bg-amber-500/10 px-3 py-2 text-sm">
+          <p className="font-medium text-amber-600 dark:text-amber-400">⏳ Edición en revisión</p>
+          <p className="text-xs text-text-muted">Tus cambios están siendo revisados por un admin.</p>
+        </div>
+      )}
+      {editRejected && post.pendingEdit && (
+        <div className="rounded-lg bg-danger/10 px-3 py-2 text-sm">
+          <p className="font-medium text-danger">✗ Edición rechazada</p>
+          {post.pendingEdit.rejectionReason && (
+            <p className="text-xs text-text-muted">Motivo: {post.pendingEdit.rejectionReason}</p>
+          )}
+        </div>
+      )}
+
       {/* Cabecera */}
       <div className="flex items-center gap-3">
         <Link
