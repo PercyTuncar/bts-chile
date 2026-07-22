@@ -24,11 +24,19 @@ export interface SaveNewsInput {
   excerpt: string;
   content: string;
   featuredImageURL: string;
+  seoImageSquareURL?: string;
+  ogImageURL?: string;
+  twitterImageURL?: string;
+  imageAlt?: string;
+  metaTitle?: string;
+  headline?: string;
   category: NewsCategory;
   tags: string[];
   authorUid: string;
   authorName: string;
+  authorUrl?: string;
   status: NewsStatus;
+  scheduledFor?: Date | null;
   readingTimeMinutes: number;
 }
 
@@ -36,16 +44,52 @@ export interface SaveNewsInput {
 export async function saveNews(input: SaveNewsInput): Promise<void> {
   const ref = newsDoc(input.slug);
   const existing = await getDoc(ref);
-  const publishedAt =
-    input.status === "published"
-      ? existing.data()?.publishedAt ?? serverTimestamp()
-      : existing.data()?.publishedAt ?? null;
+
+  // Determinar publishedAt según el estado
+  let publishedAt: any = existing.data()?.publishedAt ?? null;
+
+  if (input.status === "published" && !publishedAt) {
+    // Primera vez que se publica
+    publishedAt = serverTimestamp();
+  } else if (input.status !== "published") {
+    // Si cambia a draft, scheduled o archived, mantener la fecha original si existía
+    publishedAt = existing.data()?.publishedAt ?? null;
+  }
+
+  // Determinar scheduledFor
+  const scheduledFor = input.scheduledFor
+    ? input.scheduledFor
+    : (input.status === "scheduled" ? existing.data()?.scheduledFor : null);
+
+  // Determinar dateModified
+  const dateModified = input.status === "published"
+    ? serverTimestamp()
+    : existing.data()?.dateModified ?? null;
+
   await setDoc(
     ref,
     {
-      ...input,
-      scheduledFor: null,
+      slug: input.slug,
+      title: input.title,
+      excerpt: input.excerpt,
+      content: input.content,
+      featuredImageURL: input.featuredImageURL,
+      seoImageSquareURL: input.seoImageSquareURL || undefined,
+      ogImageURL: input.ogImageURL || undefined,
+      twitterImageURL: input.twitterImageURL || undefined,
+      imageAlt: input.imageAlt || undefined,
+      metaTitle: input.metaTitle || undefined,
+      headline: input.headline || input.title.slice(0, 110),
+      category: input.category,
+      tags: input.tags,
+      authorUid: input.authorUid,
+      authorName: input.authorName,
+      authorUrl: input.authorUrl || undefined,
+      status: input.status,
+      scheduledFor,
       publishedAt,
+      dateModified,
+      readingTimeMinutes: input.readingTimeMinutes,
       viewCount: existing.data()?.viewCount ?? 0,
       createdAt: existing.data()?.createdAt ?? serverTimestamp(),
       updatedAt: serverTimestamp(),

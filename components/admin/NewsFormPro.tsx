@@ -108,33 +108,7 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
     setSaving(true);
 
     try {
-      // Si está publicando (no draft), validar con schema estricto
-      if (data.status === "published") {
-        const validation = newsPublishSchema.safeParse(data);
-        if (!validation.success) {
-          toastError(
-            "Faltan campos obligatorios: " +
-              validation.error.issues.map((i) => i.message).join(", ")
-          );
-          setSaving(false);
-          return;
-        }
-
-        // Validar JSON-LD
-        const ldErrors = validateNewsArticleLD({
-          ...data,
-          publishedAt: null,
-          dateModified: null,
-        } as any);
-
-        if (ldErrors.length > 0) {
-          toastError("Errores de JSON-LD: " + ldErrors.join(", "));
-          setSaving(false);
-          return;
-        }
-      }
-
-      // Subir imágenes a Firebase Storage
+      // Subir imágenes PRIMERO, antes de validar
       let heroURL = data.featuredImageURL;
       let squareURL = data.seoImageSquareURL;
       let ogURL = data.ogImageURL;
@@ -168,6 +142,34 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
         );
       }
 
+      // AHORA validar si está publicando
+      if (data.status === "published") {
+        // Validar que tenga todas las imágenes requeridas
+        if (!heroURL || !squareURL || !ogURL || !data.imageAlt) {
+          toastError(
+            "Para publicar se requieren: imagen hero, imagen cuadrada 1:1, imagen OG y texto alternativo"
+          );
+          setSaving(false);
+          return;
+        }
+
+        // Validar JSON-LD
+        const ldErrors = validateNewsArticleLD({
+          ...data,
+          featuredImageURL: heroURL,
+          seoImageSquareURL: squareURL,
+          ogImageURL: ogURL,
+          publishedAt: null,
+          dateModified: null,
+        } as any);
+
+        if (ldErrors.length > 0) {
+          toastError("Errores de JSON-LD: " + ldErrors.join(", "));
+          setSaving(false);
+          return;
+        }
+      }
+
       // Calcular tiempo de lectura
       const words = data.content.replace(/<[^>]*>/g, " ").split(/\s+/).filter(Boolean).length;
       const readingTime = Math.max(1, Math.round(words / 200));
@@ -191,8 +193,9 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
         authorName: data.authorName,
         authorUrl: data.authorUrl,
         status: data.status,
+        scheduledFor: data.scheduledFor || null,
         readingTimeMinutes: readingTime,
-      } as any);
+      });
 
       // Si se publicó, notificar a IndexNow
       if (data.status === "published") {
@@ -200,7 +203,15 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
         await notifyIndexNow(`${siteUrl}/noticias/${data.slug}`);
       }
 
-      toastSuccess("Noticia guardada 💜");
+      toastSuccess(
+        data.status === "published"
+          ? "Noticia publicada 💜"
+          : data.status === "draft"
+          ? "Borrador guardado 💜"
+          : data.status === "scheduled"
+          ? "Noticia programada 💜"
+          : "Noticia archivada 💜"
+      );
       router.push("/panel-admin/noticias");
     } catch (err) {
       console.error(err);
@@ -210,12 +221,9 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
     }
   }
 
-  const canPublish =
-    isValid &&
-    formData.featuredImageURL &&
-    formData.seoImageSquareURL &&
-    formData.ogImageURL &&
-    formData.imageAlt;
+  // Validar solo si tiene contenido mínimo (no bloquear drafts)
+  const hasMinimumContent = formData.title && formData.excerpt && formData.content;
+  const canSave = hasMinimumContent;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex gap-6">
@@ -538,12 +546,25 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
             </select>
           </label>
 
-          {formData.status === "published" && !canPublish && (
-            <div className="rounded-lg bg-danger/10 p-3 text-sm text-danger">
-              <p className="font-medium">No se puede publicar aún</p>
+          {formData.status === "scheduled" && (
+            <label className="flex flex-col gap-1">
+              <span className="text-sm font-medium">Fecha de publicación programada</span>
+              <input
+                type="datetime-local"
+                {...register("scheduledFor")}
+                className={input}
+              />
+              <span className="text-xs text-text-muted">
+                La noticia se publicará automáticamente en esta fecha
+              </span>
+            </label>
+          )}
+
+          {!canSave && (
+            <div className="rounded-lg bg-warning/10 p-3 text-sm text-warning">
+              <p className="font-medium">Faltan campos básicos</p>
               <p className="mt-1 text-xs">
-                Faltan campos obligatorios: imagen hero, imagen cuadrada 1:1,
-                imagen OG y texto alternativo.
+                Completa el título, descripción y contenido para guardar.
               </p>
             </div>
           )}
@@ -551,7 +572,7 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
           <div className="flex gap-3">
             <PillButton
               type="submit"
-              disabled={saving || (formData.status === "published" && !canPublish)}
+              disabled={saving || !canSave}
               fullWidth
             >
               {saving ? (
@@ -559,8 +580,14 @@ export function NewsFormPro({ initial }: NewsFormProProps) {
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Guardando...
                 </>
+              ) : formData.status === "published" ? (
+                "Publicar noticia"
+              ) : formData.status === "draft" ? (
+                "Guardar borrador"
+              ) : formData.status === "scheduled" ? (
+                "Programar publicación"
               ) : (
-                "Guardar noticia"
+                "Archivar noticia"
               )}
             </PillButton>
             <PillButton
