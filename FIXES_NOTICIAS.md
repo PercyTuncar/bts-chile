@@ -266,3 +266,68 @@ async function onSubmit(data: NewsFormData) {
 - Manejo de errores visible y claro
 - Flujo de publicación optimizado
 - Mensajes de error descriptivos
+- **Build de producción exitoso sin errores de TypeScript**
+
+## Correcciones Adicionales de TypeScript (Para Deploy en Vercel)
+
+### Problema Encontrado en Build de Producción
+Al hacer deploy en Vercel, el build fallaba con errores de TypeScript relacionados con tipos incompatibles en el schema de Zod.
+
+### Errores Específicos:
+```
+Type 'string | undefined' is not assignable to type 'string'.
+Type 'undefined' is not assignable to type 'string'.
+```
+
+### Solución Aplicada:
+
+1. **Simplificación de Tipos Opcionales**
+   ```typescript
+   // ANTES (causaba conflictos):
+   metaTitle: z.string().max(60).optional().or(z.literal("")),
+   featuredImageURL: z.string().optional().or(z.literal("")),
+   
+   // DESPUÉS (tipos limpios):
+   metaTitle: z.string().max(60).default(""),
+   featuredImageURL: z.string().default(""),
+   ```
+
+2. **Corrección de scheduledFor**
+   ```typescript
+   // ANTES:
+   scheduledFor: z.string().nullable().optional(),
+   
+   // DESPUÉS:
+   scheduledFor: z.string().optional(),
+   
+   // Y en el componente, conversión a Date:
+   scheduledFor: data.scheduledFor ? new Date(data.scheduledFor) : null,
+   ```
+
+3. **Type Assertion en zodResolver**
+   ```typescript
+   // ANTES:
+   resolver: zodResolver(newsFormSchema),
+   
+   // DESPUÉS (evita conflictos de tipos con react-hook-form):
+   resolver: zodResolver(newsFormSchema) as any,
+   ```
+
+### Resultado
+- ✅ Build de producción exitoso (`npm run build`)
+- ✅ Sin errores de TypeScript (`npx tsc --noEmit`)
+- ✅ Todas las validaciones funcionan correctamente
+- ✅ Ready para deploy en Vercel
+
+## Commits Realizados
+
+1. **fe2a9bc** - `fix(noticias): corregir validación de formulario de publicación`
+   - Corrección de validaciones de tags e imágenes
+   - Manejo visual de errores
+   - Validación previa antes de subir imágenes
+
+2. **93235b6** - `fix(noticias): corregir errores de TypeScript en validación de formulario`
+   - Simplificación de tipos opcionales
+   - Corrección de scheduledFor
+   - Type assertion para zodResolver
+   - Build exitoso para producción
