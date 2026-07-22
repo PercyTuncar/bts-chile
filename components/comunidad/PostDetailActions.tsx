@@ -1,13 +1,15 @@
 "use client";
 
-// Acciones del post individual: reporte + compartir — PRD §8.2.
-import { Copy, Flag, Share2 } from "lucide-react";
+// Acciones del post individual: reporte + compartir + editar/eliminar — PRD §8.2.
+import { Copy, Flag, Share2, Edit3, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { PillButton } from "@/components/ui/PillButton";
 import { toastError, toastSuccess } from "@/components/ui/Toast";
 import { useAuth, useAuthStore } from "@/hooks/useAuth";
 import { reportPost } from "@/lib/firestore/community";
+import { deletePost } from "@/lib/firestore/posts";
 import type { ReportReason } from "@/types";
 
 const REASONS: { value: ReportReason; label: string }[] = [
@@ -21,15 +23,22 @@ export function PostDetailActions({
   postId,
   shareUrl,
   shareText,
+  authorUid,
 }: {
   postId: string;
   shareUrl: string;
   shareText: string;
+  authorUid: string;
 }) {
-  const { firebaseUser } = useAuth();
+  const router = useRouter();
+  const { firebaseUser, isAdmin } = useAuth();
   const openLogin = useAuthStore((s) => s.openLogin);
   const [reportOpen, setReportOpen] = useState(false);
   const [sending, setSending] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const canDelete = isAdmin || firebaseUser?.uid === authorUid;
+  const canEdit = firebaseUser?.uid === authorUid;
 
   async function submitReport(reason: ReportReason) {
     if (!firebaseUser) {
@@ -59,8 +68,40 @@ export function PostDetailActions({
     }
   }
 
+  async function handleDelete() {
+    if (!window.confirm("¿Eliminar esta publicación? Esta acción no se puede deshacer.")) return;
+    setDeleting(true);
+    try {
+      await deletePost(postId);
+      toastSuccess("Publicación eliminada.");
+      router.push("/comunidad");
+    } catch (err) {
+      console.error(err);
+      toastError("No se pudo eliminar la publicación.");
+      setDeleting(false);
+    }
+  }
+
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {canEdit && (
+        <a
+          href={`/comunidad/${postId}/editar`}
+          className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm hover:text-brand"
+        >
+          <Edit3 className="h-4 w-4" aria-hidden /> Editar
+        </a>
+      )}
+      {canDelete && (
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="inline-flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm text-danger hover:opacity-80 disabled:opacity-50"
+        >
+          <Trash2 className="h-4 w-4" aria-hidden /> {deleting ? "Eliminando..." : "Eliminar"}
+        </button>
+      )}
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
         target="_blank"

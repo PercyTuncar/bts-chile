@@ -6,7 +6,6 @@ import { UsernameGate } from "@/components/auth/UsernameGate";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
-import { WhatsappFAB } from "@/components/layout/WhatsappFAB";
 import { ToastProvider } from "@/components/ui/Toast";
 
 // Tipografía SF Pro-like — PRD §3.2.C. Self-hosted por next/font, display swap, subsetting.
@@ -75,7 +74,6 @@ export default function RootLayout({
             {children}
           </div>
           <Footer />
-          <WhatsappFAB />
           <BottomNav />
         </AuthProvider>
         <ToastProvider />

@@ -125,7 +125,9 @@ service cloud.firestore {
       allow update: if isAdmin()
         || (request.auth.uid == resource.data.authorUid
             && request.resource.data.status == resource.data.status);
-      allow delete: if request.auth.uid == resource.data.authorUid || isAdmin();
+      // Eliminar: el autor puede eliminar su propio post, el admin puede eliminar cualquier post
+      allow delete: if request.auth != null
+        && (request.auth.uid == resource.data.authorUid || isAdmin());
 
       // Reacciones: cualquier autenticado escribe SOLO la suya
       match /reactions/{uid} {

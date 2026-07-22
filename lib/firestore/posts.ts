@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  deleteDoc,
   limit as fbLimit,
   orderBy,
   query,
@@ -116,6 +117,11 @@ export async function moderatePost(
     },
     { merge: true },
   );
+}
+
+/** Elimina un post (admin o autor) — §8.3. */
+export async function deletePost(postId: string): Promise<void> {
+  await deleteDoc(postDoc(postId));
 }
 
 /** Query del feed público (aprobados, fecha desc) para onSnapshot en vivo. §8.1 */

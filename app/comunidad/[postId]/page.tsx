@@ -177,7 +177,7 @@ export default async function PostPage({ params }: Params) {
 
         <div className="mt-5 flex flex-col gap-4 border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] pt-4">
           <ReactionPicker postId={postId} counts={post.reactionCounts} />
-          <PostDetailActions postId={postId} shareUrl={url} shareText={`ARMY opina: ${headline}…`} />
+          <PostDetailActions postId={postId} shareUrl={url} shareText={`ARMY opina: ${headline}…`} authorUid={post.authorUid} />
         </div>
       </article>
 
