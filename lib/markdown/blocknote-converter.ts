@@ -3,19 +3,17 @@
  * BlockNote usa bloques JSON, pero guardamos como Markdown en la BD.
  */
 
-import type { Block } from "@blocknote/core";
-
 /**
  * Convierte bloques de BlockNote a Markdown.
  * Usa el conversor nativo de BlockNote si está disponible.
  */
-export function blocksToMarkdown(blocks: Block[]): string {
+export function blocksToMarkdown(blocks: any[]): string {
   // BlockNote tiene su propio conversor, pero por simplicidad
   // implementamos una versión básica aquí
   return blocks.map(blockToMarkdown).join("\n\n");
 }
 
-function blockToMarkdown(block: Block): string {
+function blockToMarkdown(block: any): string {
   const type = block.type;
   const content = block.content || [];
 
@@ -61,7 +59,7 @@ function blockToMarkdown(block: Block): string {
       const alt = (block.props as any)?.caption || "";
       return `![${alt}](${url})`;
 
-    case "blockquote":
+    case "quote": // BlockNote usa "quote" no "blockquote"
       return `> ${text}`;
 
     default:
@@ -69,7 +67,7 @@ function blockToMarkdown(block: Block): string {
   }
 }
 
-function convertTableToMarkdown(block: Block): string {
+function convertTableToMarkdown(block: any): string {
   // Implementación básica de tabla
   // BlockNote guarda las tablas de forma especial
   return "| Columna 1 | Columna 2 |\n|-----------|-----------|";
@@ -79,9 +77,9 @@ function convertTableToMarkdown(block: Block): string {
  * Convierte Markdown a bloques de BlockNote.
  * Parsea Markdown y genera estructura de bloques JSON.
  */
-export function markdownToBlocks(markdown: string): Block[] {
+export function markdownToBlocks(markdown: string): any[] {
   const lines = markdown.split("\n");
-  const blocks: Block[] = [];
+  const blocks: any[] = [];
   let currentList: { type: "bullet" | "numbered"; items: string[] } | null = null;
 
   for (let i = 0; i < lines.length; i++) {
@@ -96,8 +94,7 @@ export function markdownToBlocks(markdown: string): Block[] {
             type: currentList!.type === "bullet" ? "bulletListItem" : "numberedListItem",
             content: [{ type: "text", text: item, styles: {} }],
             children: [],
-            props: {},
-          } as Block);
+          } as any);
         });
         currentList = null;
       }
@@ -118,7 +115,7 @@ export function markdownToBlocks(markdown: string): Block[] {
           content: [{ type: "text", text, styles: {} }],
           children: [],
           props: { level },
-        } as Block);
+        } as any);
       }
       continue;
     }
@@ -135,8 +132,7 @@ export function markdownToBlocks(markdown: string): Block[] {
               type: "numberedListItem",
               content: [{ type: "text", text: item, styles: {} }],
               children: [],
-              props: {},
-            } as Block);
+            } as any);
           });
         }
         currentList = { type: "bullet", items: [] };
@@ -157,8 +153,7 @@ export function markdownToBlocks(markdown: string): Block[] {
               type: "bulletListItem",
               content: [{ type: "text", text: item, styles: {} }],
               children: [],
-              props: {},
-            } as Block);
+            } as any);
           });
         }
         currentList = { type: "numbered", items: [] };
@@ -172,11 +167,10 @@ export function markdownToBlocks(markdown: string): Block[] {
     if (quoteMatch) {
       blocks.push({
         id: crypto.randomUUID(),
-        type: "blockquote",
+        type: "quote",
         content: [{ type: "text", text: quoteMatch[1], styles: {} }],
         children: [],
-        props: {},
-      } as Block);
+      } as any);
       continue;
     }
 
@@ -192,7 +186,7 @@ export function markdownToBlocks(markdown: string): Block[] {
           url: imageMatch[2],
           caption: imageMatch[1],
         },
-      } as Block);
+      } as any);
       continue;
     }
 
@@ -202,8 +196,7 @@ export function markdownToBlocks(markdown: string): Block[] {
       type: "paragraph",
       content: [{ type: "text", text: line, styles: {} }],
       children: [],
-      props: {},
-    } as Block);
+    } as any);
   }
 
   // Cerrar lista final si existe
@@ -214,8 +207,7 @@ export function markdownToBlocks(markdown: string): Block[] {
         type: currentList!.type === "bullet" ? "bulletListItem" : "numberedListItem",
         content: [{ type: "text", text: item, styles: {} }],
         children: [],
-        props: {},
-      } as Block);
+      } as any);
     });
   }
 
@@ -225,7 +217,7 @@ export function markdownToBlocks(markdown: string): Block[] {
 /**
  * Extrae el texto plano de bloques BlockNote (para contar palabras, etc.)
  */
-export function blocksToPlainText(blocks: Block[]): string {
+export function blocksToPlainText(blocks: any[]): string {
   return blocks
     .map((block) => {
       const content = block.content || [];

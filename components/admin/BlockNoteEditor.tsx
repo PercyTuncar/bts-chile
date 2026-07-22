@@ -10,7 +10,6 @@ import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useEffect } from "react";
 import { blocksToMarkdown, markdownToBlocks } from "@/lib/markdown/blocknote-converter";
-import type { Block } from "@blocknote/core";
 
 interface BlockNoteEditorProps {
   value: string; // Markdown
@@ -30,7 +29,7 @@ export function BlockNoteEditor({ value, onChange, placeholder }: BlockNoteEdito
 
     const unsubscribe = editor.onChange(() => {
       const blocks = editor.document;
-      const markdown = blocksToMarkdown(blocks as Block[]);
+      const markdown = blocksToMarkdown(blocks as any[]);
       onChange(markdown);
     });
 

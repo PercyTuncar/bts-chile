@@ -6,7 +6,7 @@
  */
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { X, Upload, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -45,54 +45,115 @@ export function ImageUploadField({
   const [preview, setPreview] = useState<string | null>(value);
   const [validating, setValidating] = useState(false);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
+  const validatingRef = useRef(false); // Prevenir múltiples validaciones simultáneas
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
+
+    // Prevenir validaciones simultáneas
+    if (validatingRef.current) {
+      console.log("[ImageUploadField] Ya hay una validación en progreso, ignorando...");
+      return;
+    }
+
+    validatingRef.current = true;
+
+    // Limpiar validación anterior
+    setValidation(null);
 
     // Crear preview
     const previewUrl = URL.createObjectURL(selectedFile);
     setPreview(previewUrl);
     setFile(selectedFile);
     setValidating(true);
-    setValidation(null);
 
     try {
       // Leer el archivo como base64
       const reader = new FileReader();
+
       reader.onload = async (event) => {
         const base64 = event.target?.result as string;
 
-        // Validar con la API
-        const response = await fetch("/api/validate-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            imageData: base64,
-            aspectRatio,
-            requiredWidth,
-            requiredHeight,
-            minWidth,
-          }),
-        });
+        try {
+          // Validar con la API con timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
 
-        const result: ValidationResult = await response.json();
-        setValidation(result);
-        setValidating(false);
+          const response = await fetch("/api/validate-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              imageData: base64,
+              aspectRatio,
+              requiredWidth,
+              requiredHeight,
+              minWidth,
+            }),
+            signal: controller.signal,
+          });
 
-        if (result.valid) {
-          // Imagen válida, notificar al padre
-          onChange(previewUrl, selectedFile);
-        } else {
-          // Imagen inválida, limpiar
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const result: ValidationResult = await response.json();
+          setValidation(result);
+
+          if (result.valid) {
+            // Imagen válida, notificar al padre
+            onChange(previewUrl, selectedFile);
+          } else {
+            // Imagen inválida, limpiar
+            onChange(null, null);
+          }
+        } catch (error: any) {
+          console.error("Error validando imagen:", error);
+
+          if (error.name === 'AbortError') {
+            setValidation({
+              valid: false,
+              width: 0,
+              height: 0,
+              aspectRatio: 0,
+              error: "La validación tardó demasiado. Intenta con una imagen más pequeña.",
+            });
+          } else {
+            setValidation({
+              valid: false,
+              width: 0,
+              height: 0,
+              aspectRatio: 0,
+              error: "Error al procesar la imagen",
+            });
+          }
           onChange(null, null);
+        } finally {
+          setValidating(false);
+          validatingRef.current = false;
         }
+      };
+
+      reader.onerror = () => {
+        setValidating(false);
+        validatingRef.current = false;
+        setValidation({
+          valid: false,
+          width: 0,
+          height: 0,
+          aspectRatio: 0,
+          error: "Error al leer el archivo",
+        });
+        onChange(null, null);
       };
 
       reader.readAsDataURL(selectedFile);
     } catch (error) {
-      console.error("Error validando imagen:", error);
+      console.error("Error en handleFileChange:", error);
       setValidating(false);
+      validatingRef.current = false;
       setValidation({
         valid: false,
         width: 0,
@@ -100,6 +161,7 @@ export function ImageUploadField({
         aspectRatio: 0,
         error: "Error al procesar la imagen",
       });
+      onChange(null, null);
     }
   }
 
