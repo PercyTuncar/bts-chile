@@ -4,11 +4,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { PillButton } from "@/components/ui/PillButton";
 import { Stepper } from "@/components/ui/Stepper";
+import { Combobox } from "@/components/ui/Combobox";
 import { toastError, toastSuccess } from "@/components/ui/Toast";
 import { useAuth, useAuthStore } from "@/hooks/useAuth";
 import {
@@ -19,18 +20,7 @@ import {
 } from "@/lib/firestore/users";
 import { avatarPath, uploadImage } from "@/lib/storage";
 import { profileSchema, type ProfileInput } from "@/lib/utils/validators";
-
-const CITIES = [
-  "Santiago",
-  "Valparaíso",
-  "Viña del Mar",
-  "Concepción",
-  "Antofagasta",
-  "La Serena",
-  "Temuco",
-  "Rancagua",
-  "Otra",
-];
+import { COUNTRIES, getCitiesByCountry } from "@/lib/data/countries";
 
 function toInputDate(d: Date): string {
   const y = d.getFullYear();
@@ -49,10 +39,18 @@ export default function CompletarPerfilForm() {
   const [saving, setSaving] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
+  // Estado para las ciudades dinámicas según el país
+  const [selectedCountry, setSelectedCountry] = useState(profile?.country ?? "CL");
+  const [availableCities, setAvailableCities] = useState<string[]>(() =>
+    getCitiesByCountry(profile?.country ?? "CL")
+  );
+
   const {
     register,
     handleSubmit,
     trigger,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProfileInput>({
     resolver: zodResolver(profileSchema),
@@ -62,10 +60,27 @@ export default function CompletarPerfilForm() {
       username:
         profile?.username ??
         slugifyUsername(profile?.nickname || firebaseUser?.displayName || ""),
-      city: profile?.city ?? "Santiago",
+      city: profile?.city ?? "",
       country: profile?.country ?? "CL",
     },
   });
+
+  const watchCountry = watch("country");
+  const watchCity = watch("city");
+
+  // Actualizar ciudades cuando cambia el país
+  useEffect(() => {
+    if (watchCountry) {
+      const cities = getCitiesByCountry(watchCountry);
+      setAvailableCities(cities);
+      setSelectedCountry(watchCountry);
+
+      // Si la ciudad actual no está en la nueva lista, resetear
+      if (watchCity && !cities.includes(watchCity)) {
+        setValue("city", "");
+      }
+    }
+  }, [watchCountry, watchCity, setValue]);
 
   const photoPreview = useMemo(
     () => (photoFile ? URL.createObjectURL(photoFile) : null),
@@ -182,38 +197,33 @@ export default function CompletarPerfilForm() {
                 )}
               </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium">País *</span>
-                <select
-                  {...register("country")}
-                  className="h-12 rounded-button border border-[color-mix(in_srgb,var(--text)_12%,transparent)] bg-surface px-4"
-                >
-                  <option value="CL">Chile</option>
-                  <option value="AR">Argentina</option>
-                  <option value="PE">Perú</option>
-                  <option value="OT">Otro</option>
-                </select>
-                {errors.country && (
-                  <span className="text-sm text-danger">{errors.country.message}</span>
-                )}
-              </label>
+              {/* Selector de País con búsqueda */}
+              <Combobox
+                label="País *"
+                value={COUNTRIES.find((c) => c.code === watchCountry)?.name || ""}
+                onChange={(countryName) => {
+                  const country = COUNTRIES.find((c) => c.name === countryName);
+                  if (country) {
+                    setValue("country", country.code, { shouldValidate: true });
+                  }
+                }}
+                options={COUNTRIES.map((c) => c.name)}
+                placeholder="Selecciona tu país"
+                emptyMessage="No se encontró el país"
+                error={errors.country?.message}
+              />
 
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium">Ciudad *</span>
-                <select
-                  {...register("city")}
-                  className="h-12 rounded-button border border-[color-mix(in_srgb,var(--text)_12%,transparent)] bg-surface px-4"
-                >
-                  {CITIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                {errors.city && (
-                  <span className="text-sm text-danger">{errors.city.message}</span>
-                )}
-              </label>
+              {/* Selector de Ciudad con búsqueda dinámica */}
+              <Combobox
+                label="Ciudad / Región / Provincia *"
+                value={watchCity || ""}
+                onChange={(city) => setValue("city", city, { shouldValidate: true })}
+                options={availableCities}
+                placeholder="Selecciona tu ciudad o región"
+                emptyMessage="No se encontraron resultados"
+                error={errors.city?.message}
+                disabled={!watchCountry}
+              />
 
               <PillButton fullWidth onClick={goToStep2}>
                 Continuar
