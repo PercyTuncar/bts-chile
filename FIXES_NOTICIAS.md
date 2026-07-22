@@ -331,3 +331,42 @@ Type 'undefined' is not assignable to type 'string'.
    - Corrección de scheduledFor
    - Type assertion para zodResolver
    - Build exitoso para producción
+
+3. **9f8232a** - `fix(noticias): evitar campos undefined en Firestore`
+   - Cambiar campos opcionales de `|| undefined` a `|| ""`
+   - Firestore no acepta valores undefined
+   - Corrección del error al guardar noticias
+
+## Problema Adicional Encontrado: Firestore y Valores Undefined
+
+### Error:
+```
+FirebaseError: Function setDoc() called with invalid data (via `toFirestore()`). 
+Unsupported field value: undefined (found in field metaTitle in document news/...)
+```
+
+### Causa:
+En [`lib/firestore/news.ts`](lib/firestore/news.ts), los campos opcionales usaban `|| undefined` para valores vacíos, pero **Firestore no acepta valores `undefined`** en documentos.
+
+### Solución:
+```typescript
+// ANTES (causaba error):
+metaTitle: input.metaTitle || undefined,
+seoImageSquareURL: input.seoImageSquareURL || undefined,
+authorUrl: input.authorUrl || undefined,
+
+// DESPUÉS (correcto):
+metaTitle: input.metaTitle || "",
+seoImageSquareURL: input.seoImageSquareURL || "",
+authorUrl: input.authorUrl || "",
+```
+
+**Firestore acepta:**
+- Strings vacíos `""`
+- `null`
+- Omitir el campo completamente
+
+**Firestore NO acepta:**
+- `undefined`
+
+Esta corrección permite guardar noticias exitosamente en Firestore.
