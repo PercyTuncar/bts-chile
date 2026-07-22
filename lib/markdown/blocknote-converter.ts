@@ -20,13 +20,19 @@ function blockToMarkdown(block: Block): string {
   const content = block.content || [];
 
   // Extraer texto plano del contenido
-  const text = content
-    .map((item: any) => {
-      if (typeof item === "string") return item;
-      if (item.type === "text") return item.text || "";
-      return "";
-    })
-    .join("");
+  // content puede ser un array o undefined
+  let text = "";
+  if (Array.isArray(content)) {
+    text = content
+      .map((item: any) => {
+        if (typeof item === "string") return item;
+        if (item.type === "text") return item.text || "";
+        return "";
+      })
+      .join("");
+  } else if (typeof content === "string") {
+    text = content;
+  }
 
   switch (type) {
     case "heading":
