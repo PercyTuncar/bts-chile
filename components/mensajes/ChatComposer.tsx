@@ -9,7 +9,6 @@ import { RichTextEditor, type RichTextValue } from "@/components/comunidad/RichT
 import { toastError } from "@/components/ui/Toast";
 import { useAuth } from "@/hooks/useAuth";
 import { clearTyping, setTyping } from "@/lib/firestore/chat";
-import type { SendChatInput } from "@/lib/functions";
 import { chatCharLimit } from "@/lib/membership";
 import { armyChatImagePath, uploadImage } from "@/lib/storage";
 
@@ -30,7 +29,7 @@ export function ChatComposer({
 }: {
   cooldownUntil: number | null;
   chatOpen: boolean;
-  onSend: (input: SendChatInput) => Promise<void>;
+  onSend: (text: string, richContent: string | null, imageURL: string | null) => Promise<void>;
 }) {
   const { firebaseUser, profile, isAdmin, canChat } = useAuth();
   const [rich, setRich] = useState<RichTextValue>(EMPTY);
@@ -106,7 +105,7 @@ export function ChatComposer({
         }
         imageURL = await uploadImage(armyChatImagePath(firebaseUser.uid, image.name), image);
       }
-      await onSend({ text: rich.text.trim(), richContent: rich.html || null, imageURL });
+      await onSend(rich.text.trim(), rich.html || null, imageURL);
       setRich(EMPTY);
       setImage(null);
       setEditorKey((k) => k + 1);

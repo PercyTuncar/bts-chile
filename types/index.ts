@@ -187,6 +187,12 @@ export interface ChatMessage {
   deleted: boolean; // Fase 2 (soft-delete)
   deletedBy: string | null; // Fase 2
   pinned: boolean; // Fase 2
+  // Reply/Quote
+  replyTo?: {
+    messageId: string;
+    senderNickname: string;
+    text: string; // preview del mensaje al que responde (máx 100 chars)
+  } | null;
 }
 
 /** Estado de rate-limit por usuario — armyChatRate/{uid} (solo Admin SDK escribe). */

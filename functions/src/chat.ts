@@ -23,6 +23,11 @@ interface SendData {
   text?: string;
   richContent?: string | null;
   imageURL?: string | null;
+  replyTo?: {
+    messageId: string;
+    senderNickname: string;
+    text: string;
+  } | null;
 }
 
 export const sendArmyChatMessage = onCall<SendData>(async (request) => {
@@ -117,6 +122,7 @@ export const sendArmyChatMessage = onCall<SendData>(async (request) => {
   // 4) Escribir el mensaje (Admin SDK) + actualizar contadores del room.
   const photoURL =
     (user.customPhotoURL as string | null) || (user.photoURL as string | null) || null;
+  const replyTo = request.data.replyTo || null;
   const msgRef = db.collection("chatRooms").doc(ROOM_ID).collection("messages").doc();
   await msgRef.set({
     senderUid: uid,
@@ -133,6 +139,7 @@ export const sendArmyChatMessage = onCall<SendData>(async (request) => {
     deleted: false,
     deletedBy: null,
     pinned: false,
+    replyTo,
   });
 
   await db.collection("chatRooms").doc(ROOM_ID).set(

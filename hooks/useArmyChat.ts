@@ -75,7 +75,12 @@ export function useArmyChat() {
   }, [loadingOlder, hasMore]);
 
   const send = useCallback(
-    async (input: SendChatInput) => {
+    async (
+      text: string,
+      richContent: string | null,
+      imageURL: string | null,
+      replyTo?: { messageId: string; senderNickname: string; text: string } | null,
+    ) => {
       if (!firebaseUser || !profile) return;
       const tempId = `temp-${++tempCounter}`;
       const temp: DisplayMessage = {
@@ -86,19 +91,20 @@ export function useArmyChat() {
         senderPhotoURL: profile.customPhotoURL || profile.photoURL || null,
         senderMembership: profile.membershipType,
         senderRole: profile.role,
-        text: input.text,
-        richContent: input.richContent,
-        imageURL: input.imageURL,
+        text,
+        richContent,
+        imageURL,
         createdAt: new Date(),
         editedAt: null,
         deleted: false,
         deletedBy: null,
         pinned: false,
+        replyTo: replyTo || undefined,
         _pending: true,
       };
       setPendings((p) => [...p, temp]);
       try {
-        const res = await sendArmyChatMessage(input);
+        const res = await sendArmyChatMessage({ text, richContent, imageURL, replyTo });
         if (res.cooldownUntil) setCooldownUntil((prev) => Math.max(prev ?? 0, res.cooldownUntil!));
         // marca el temp con su id real para deduplicar contra la suscripción
         setPendings((p) =>

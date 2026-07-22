@@ -29,6 +29,11 @@ export interface SendChatInput {
   text: string;
   richContent: string | null;
   imageURL: string | null;
+  replyTo?: {
+    messageId: string;
+    senderNickname: string;
+    text: string;
+  } | null;
 }
 export interface SendChatResult {
   id: string;

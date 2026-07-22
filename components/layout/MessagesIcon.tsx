@@ -23,13 +23,23 @@ export function MessagesIcon() {
 
   // Badge para invitados: muestra "+1" hasta que hagan clic, persiste en localStorage
   const [showGuestBadge, setShowGuestBadge] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       const dismissed = localStorage.getItem(GUEST_BADGE_KEY);
-      setShowGuestBadge(!dismissed);
+      const shouldShow = !dismissed;
+      setShowGuestBadge(shouldShow);
+
+      // Mostrar tooltip por 3 segundos cuando aparece el badge
+      if (shouldShow) {
+        setShowTooltip(true);
+        const timer = setTimeout(() => setShowTooltip(false), 3000);
+        return () => clearTimeout(timer);
+      }
     } else {
       setShowGuestBadge(false);
+      setShowTooltip(false);
     }
   }, [status]);
 
@@ -37,32 +47,43 @@ export function MessagesIcon() {
     if (status === "unauthenticated" && showGuestBadge) {
       localStorage.setItem(GUEST_BADGE_KEY, "true");
       setShowGuestBadge(false);
+      setShowTooltip(false);
     }
   }
 
   return (
-    <Link
-      href="/mensajes"
-      onClick={handleClick}
-      aria-label={`Mensajes${totalUnread > 0 ? ` (${totalUnread} sin leer)` : ""}`}
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "relative inline-flex h-11 w-11 items-center justify-center rounded-full glass transition-transform hover:scale-105",
-        active ? "text-brand" : "hover:text-brand",
+    <div className="relative">
+      <Link
+        href="/mensajes"
+        onClick={handleClick}
+        aria-label={`Mensajes${totalUnread > 0 ? ` (${totalUnread} sin leer)` : ""}`}
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "relative inline-flex h-11 w-11 items-center justify-center rounded-full glass transition-transform hover:scale-105",
+          active ? "text-brand" : "hover:text-brand",
+        )}
+      >
+        <MessageCircle className="h-5 w-5" aria-hidden />
+        {status === "authenticated" && totalUnread > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white">
+            {totalUnread > 9 ? "9+" : totalUnread}
+          </span>
+        )}
+        {status === "unauthenticated" && showGuestBadge && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.6)]">
+            +1
+          </span>
+        )}
+      </Link>
+
+      {/* Tooltip temporal "+1 nuevo mensaje" */}
+      {status === "unauthenticated" && showGuestBadge && showTooltip && (
+        <div className="pointer-events-none absolute -bottom-12 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg bg-danger px-3 py-1.5 text-xs font-semibold text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
+          +1 nuevo mensaje
+          <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-danger" />
+        </div>
       )}
-    >
-      <MessageCircle className="h-5 w-5" aria-hidden />
-      {status === "authenticated" && totalUnread > 0 && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white">
-          {totalUnread > 9 ? "9+" : totalUnread}
-        </span>
-      )}
-      {status === "unauthenticated" && showGuestBadge && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.6)]">
-          +1
-        </span>
-      )}
-    </Link>
+    </div>
   );
 }
 

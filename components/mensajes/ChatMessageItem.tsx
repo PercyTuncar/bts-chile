@@ -3,9 +3,10 @@
 // Mensaje del ARMY Chat — estilo Telegram: avatar + nombre + hora, agrupa consecutivos.
 // Fase 2: borrado (soft-delete, el admin ve el contenido archivado), edición inline y
 // menú de acciones (editar / eliminar / fijar / silenciar / banear).
+// Respuestas/quotes: muestra mensaje al que se responde con diseño Telegram.
 import Image from "next/image";
 import Link from "next/link";
-import { Ban, Check, MoreVertical, Pencil, Pin, PinOff, Trash2, VolumeX, X } from "lucide-react";
+import { Ban, Check, MoreVertical, Pencil, Pin, PinOff, Reply, Trash2, VolumeX, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RichTextEditor, type RichTextValue } from "@/components/comunidad/RichTextEditor";
 import { AdminBadge } from "@/components/ui/Badge";
@@ -26,6 +27,7 @@ export interface ChatItemHandlers {
   onTogglePin: (id: string, pin: boolean) => void;
   onMute: (uid: string, nickname: string) => void;
   onBan: (uid: string, nickname: string) => void;
+  onReply: (messageId: string, senderNickname: string, text: string) => void;
 }
 
 export function ChatMessageItem({
@@ -179,6 +181,23 @@ export function ChatMessageItem({
               </div>
             ) : (
               <>
+                {/* Mensaje al que se responde (quote) */}
+                {m.replyTo && (
+                  <div className={cn(
+                    "mb-2 rounded-lg border-l-2 px-2 py-1.5 text-xs",
+                    mine
+                      ? "border-white/40 bg-white/10"
+                      : "border-brand bg-brand-soft/30"
+                  )}>
+                    <p className={cn("font-semibold", mine ? "text-white/90" : "text-brand")}>
+                      {m.replyTo.senderNickname}
+                    </p>
+                    <p className={cn("mt-0.5 truncate", mine ? "text-white/70" : "text-text-muted")}>
+                      {m.replyTo.text}
+                    </p>
+                  </div>
+                )}
+
                 {m.imageURL && (
                   <div className="mb-1 max-w-[16rem]">
                     <SmartImage src={m.imageURL} alt="Imagen" rounded="rounded-xl" />
@@ -213,6 +232,15 @@ export function ChatMessageItem({
                 <>
                   <button type="button" aria-hidden tabIndex={-1} onClick={() => setMenuOpen(false)} className="fixed inset-0 z-20 cursor-default" />
                   <div className={cn("glass-modal absolute z-30 mt-1 w-40 rounded-xl p-1 text-sm", mine ? "right-0" : "left-0")}>
+                    <MenuItem
+                      icon={<Reply className="h-4 w-4" />}
+                      onClick={() => {
+                        handlers.onReply(m.id, m.senderNickname, m.text || "📷 Imagen");
+                        setMenuOpen(false);
+                      }}
+                    >
+                      Responder
+                    </MenuItem>
                     {canEdit && (
                       <MenuItem icon={<Pencil className="h-4 w-4" />} onClick={() => { setEditing(true); setMenuOpen(false); }}>
                         Editar
