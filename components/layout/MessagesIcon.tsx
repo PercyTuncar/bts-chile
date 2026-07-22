@@ -77,7 +77,7 @@ export function MessagesIcon() {
 
       {/* Tooltip temporal "+1 nuevo mensaje" */}
       {shouldShowBadge && showTooltip && (
-        <div className="pointer-events-none absolute -bottom-12 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg bg-danger px-3 py-1.5 text-xs font-semibold text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="pointer-events-none absolute -bottom-12 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-danger px-3 py-1.5 text-xs font-semibold text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-300 max-w-[calc(100vw-2rem)] text-center whitespace-normal sm:whitespace-nowrap">
           +1 nuevo mensaje
           <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-danger" />
         </div>
