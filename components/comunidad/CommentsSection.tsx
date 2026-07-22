@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Pencil, Trash2, X, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PillButton } from "@/components/ui/PillButton";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -140,10 +140,16 @@ export function CommentsSection({ postId }: { postId: string }) {
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX))}
           placeholder={firebaseUser ? "Escribe un comentario…" : "Inicia sesión para comentar"}
-          className="h-12 flex-1 rounded-button border border-[color-mix(in_srgb,var(--text)_12%,transparent)] bg-surface px-4"
+          className="h-12 flex-1 min-w-0 rounded-button border border-[color-mix(in_srgb,var(--text)_12%,transparent)] bg-surface px-4 text-sm"
         />
-        <PillButton type="submit" disabled={saving || !text.trim()}>
-          Enviar
+        <PillButton
+          type="submit"
+          disabled={saving || !text.trim()}
+          size="sm"
+          className="!w-12 !h-12 !p-0 !min-h-0 shrink-0"
+          aria-label="Enviar comentario"
+        >
+          <Send className="h-5 w-5" />
         </PillButton>
       </form>
 
