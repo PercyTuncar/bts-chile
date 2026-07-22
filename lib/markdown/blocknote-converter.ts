@@ -17,14 +17,54 @@ function blockToMarkdown(block: any): string {
   const type = block.type;
   const content = block.content || [];
 
-  // Extraer texto plano del contenido
-  // content puede ser un array o undefined
+  // Extraer texto con estilos (negrita, cursiva, colores, etc.)
   let text = "";
   if (Array.isArray(content)) {
     text = content
       .map((item: any) => {
         if (typeof item === "string") return item;
-        if (item.type === "text") return item.text || "";
+        if (item.type === "text") {
+          let txt = item.text || "";
+          const styles = item.styles || {};
+
+          // Aplicar estilos en orden: color primero, luego formato
+          // Color de texto (usar span HTML inline)
+          if (styles.textColor) {
+            txt = `<span style="color: ${styles.textColor}">${txt}</span>`;
+          }
+
+          // Background color
+          if (styles.backgroundColor) {
+            txt = `<span style="background-color: ${styles.backgroundColor}">${txt}</span>`;
+          }
+
+          // Bold
+          if (styles.bold) {
+            txt = `**${txt}**`;
+          }
+
+          // Italic
+          if (styles.italic) {
+            txt = `*${txt}*`;
+          }
+
+          // Underline (usar HTML)
+          if (styles.underline) {
+            txt = `<u>${txt}</u>`;
+          }
+
+          // Strike through
+          if (styles.strike) {
+            txt = `~~${txt}~~`;
+          }
+
+          // Code inline
+          if (styles.code) {
+            txt = "`" + txt + "`";
+          }
+
+          return txt;
+        }
         return "";
       })
       .join("");

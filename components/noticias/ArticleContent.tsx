@@ -2,6 +2,7 @@
 // Tipografía amplia con @tailwindcss/typography; acento morado en enlaces/citas.
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import Image from "next/image";
 
 export function ArticleContent({ html }: { html: string }) {
@@ -9,6 +10,7 @@ export function ArticleContent({ html }: { html: string }) {
     <div className="prose prose-lg prose-neutral dark:prose-invert max-w-none prose-a:text-brand prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-brand prose-blockquote:border-l-4 prose-blockquote:bg-brand-soft prose-blockquote:py-1 prose-blockquote:italic prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3 prose-p:text-base prose-p:leading-relaxed prose-p:mb-4 prose-img:rounded-xl prose-img:shadow-lg prose-strong:text-brand prose-strong:font-semibold prose-code:text-brand prose-code:bg-brand-soft prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-surface prose-pre:border prose-pre:border-border prose-table:border-collapse prose-table:w-full prose-th:bg-brand-soft prose-th:text-brand prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-border prose-td:p-3 prose-td:border prose-td:border-border prose-ul:list-disc prose-ul:ml-6 prose-ol:list-decimal prose-ol:ml-6 prose-li:mb-2">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           // Componente personalizado para imágenes
           img: ({ node, ...props }) => {
