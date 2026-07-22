@@ -12,6 +12,7 @@ import { getApprovedPostsByAuthor } from "@/lib/firestore/posts";
 import { getUserByUsernameAdmin } from "@/lib/firestore/users.server";
 import { formatDateLong, toISOString } from "@/lib/utils/formatters";
 import { absoluteUrl, SITE_URL } from "@/lib/utils/seo";
+import { getCountryName } from "@/lib/data/countries";
 import type { Post, User, WithId } from "@/types";
 
 type Params = { params: Promise<{ username: string }> };
@@ -78,7 +79,7 @@ export default async function PerfilPage({ params }: Params) {
       alternateName: `@${handle}`,
       image: avatar ?? undefined,
       url,
-      homeLocation: { "@type": "Place", name: `${user.city}, Chile` },
+      homeLocation: { "@type": "Place", name: `${user.city}, ${getCountryName(user.country)}` },
       memberOf: { "@type": "Organization", name: "BTS Chile", url: SITE_URL },
       interactionStatistic: {
         "@type": "InteractionCounter",
@@ -115,7 +116,7 @@ export default async function PerfilPage({ params }: Params) {
           </div>
           <p className="mt-0.5 text-brand">@{handle}</p>
           <p className="mt-1 text-text-muted">
-            {user.city}, Chile · Se unió el {formatDateLong(user.joinedAt)}
+            {user.city}, {getCountryName(user.country)} · Se unió el {formatDateLong(user.joinedAt)}
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-4 text-sm sm:justify-start">
             <span><b className="tabular-nums">{user.followersCount ?? 0}</b> <span className="text-text-muted">seguidores</span></span>
