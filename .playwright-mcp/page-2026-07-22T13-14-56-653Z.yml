@@ -1,0 +1,139 @@
+- generic [active] [ref=e1]:
+  - link "Saltar al contenido" [ref=e2] [cursor=pointer]:
+    - /url: "#contenido"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "ARMY CHILE" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: 💜
+      - navigation [ref=e8]:
+        - link "Entradas" [ref=e9] [cursor=pointer]:
+          - /url: /entradas
+        - link "Noticias" [ref=e10] [cursor=pointer]:
+          - /url: /noticias
+        - link "Tienda" [ref=e11] [cursor=pointer]:
+          - /url: /tienda
+        - link "Comunidad" [ref=e12] [cursor=pointer]:
+          - /url: /comunidad
+        - link "Membresía" [ref=e13] [cursor=pointer]:
+          - /url: /membresia
+      - generic [ref=e14]:
+        - link "Notificaciones" [ref=e15] [cursor=pointer]:
+          - /url: /notificaciones
+        - generic [ref=e19]:
+          - link "Mensajes" [ref=e20] [cursor=pointer]:
+            - /url: /mensajes
+            - generic [ref=e23]: "+1"
+          - generic: +1 nuevo mensaje
+        - generic [ref=e24]:
+          - button "Activar modo oscuro" [ref=e25]
+          - button "Entrar" [ref=e28]
+  - main [ref=e30]:
+    - navigation "Breadcrumb" [ref=e31]:
+      - link "Inicio" [ref=e32] [cursor=pointer]:
+        - /url: /
+      - text: ›
+      - link "Comunidad" [ref=e33] [cursor=pointer]:
+        - /url: /comunidad
+      - text: ›
+      - generic [ref=e34]: ¡BTS confirmado en el Estadio Nacional! El Ministerio del D…
+    - article [ref=e36]:
+      - generic [ref=e37]:
+        - generic [ref=e39]:
+          - link [ref=e40] [cursor=pointer]:
+            - /url: /perfil/percy_tuncar
+            - img "PERCY TUNCAR" [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - link "PERCY TUNCAR" [ref=e44] [cursor=pointer]:
+                - /url: /perfil/percy_tuncar
+              - generic [ref=e45]: Admin
+            - paragraph [ref=e49]: hace alrededor de 2 horas · General
+        - heading "¡BTS confirmado en el Estadio Nacional! El Ministerio del D…" [level=1] [ref=e50]
+        - generic [ref=e53]:
+          - paragraph [ref=e54]:
+            - strong [ref=e56]: ¡BTS confirmado en el Estadio Nacional!
+          - paragraph [ref=e57]:
+            - text: El Ministerio del Deporte confirmó la autorización para el uso del recinto para los conciertos de
+            - strong [ref=e58]: octubre
+            - text: ", tras aprobar el plan técnico de la productora. 💜"
+          - paragraph
+        - img "¡BTS confirmado en el Estadio Nacional! El Ministerio del D" [ref=e61] [cursor=pointer]
+        - generic [ref=e62]:
+          - button "💜 💜 68 🫶 18 🔥 12 · 99" [ref=e64]:
+            - generic [ref=e65]: 💜
+            - generic [ref=e66]:
+              - generic [ref=e67]: 💜 68
+              - generic [ref=e68]: 🫶 18
+              - generic [ref=e69]: 🔥 12
+              - generic [ref=e70]: · 99
+          - button "Compartir" [ref=e72]
+        - generic [ref=e80]:
+          - heading "Comentarios (0)" [level=2] [ref=e81]:
+            - text: Comentarios
+            - generic [ref=e82]: (0)
+          - generic [ref=e83]:
+            - textbox "Inicia sesión para comentar" [ref=e84]
+            - button "Enviar comentario" [disabled] [ref=e85]
+          - list [ref=e89]:
+            - listitem [ref=e90]: Sé la primera en comentar 💜
+  - contentinfo [ref=e91]:
+    - generic [ref=e92]:
+      - generic [ref=e93]:
+        - link "btschile.com" [ref=e94] [cursor=pointer]:
+          - /url: /
+          - text: btschile.com
+          - generic [ref=e95]: 💜
+        - paragraph [ref=e96]: La comunidad oficial de ARMY en Chile. Entradas verificadas, noticias, tienda y membresía ARMY Boom v4.
+        - list [ref=e97]:
+          - listitem [ref=e98]:
+            - link "BTS Chile en Instagram" [ref=e99] [cursor=pointer]:
+              - /url: https://www.instagram.com/btschile
+              - text: Instagram
+          - listitem [ref=e100]:
+            - link "BTS Chile en Twitter" [ref=e101] [cursor=pointer]:
+              - /url: https://twitter.com/btschile
+              - text: Twitter
+          - listitem [ref=e102]:
+            - link "BTS Chile en Facebook" [ref=e103] [cursor=pointer]:
+              - /url: https://www.facebook.com/btschile
+              - text: Facebook
+          - listitem [ref=e104]:
+            - link "BTS Chile en TikTok" [ref=e105] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@btschile
+              - text: TikTok
+          - listitem [ref=e106]:
+            - link "BTS Chile en YouTube" [ref=e107] [cursor=pointer]:
+              - /url: https://www.youtube.com/@btschile
+              - text: YouTube
+      - navigation "Enlaces del sitio" [ref=e108]:
+        - heading "Explora" [level=2] [ref=e109]
+        - list [ref=e110]:
+          - listitem [ref=e111]:
+            - link "Inicio — BTS Chile" [ref=e112] [cursor=pointer]:
+              - /url: /
+          - listitem [ref=e113]:
+            - link "Entradas BTS Chile 2026" [ref=e114] [cursor=pointer]:
+              - /url: /entradas
+          - listitem [ref=e115]:
+            - link "Noticias BTS Chile" [ref=e116] [cursor=pointer]:
+              - /url: /noticias
+          - listitem [ref=e117]:
+            - link "Tienda BTS Chile" [ref=e118] [cursor=pointer]:
+              - /url: /tienda
+          - listitem [ref=e119]:
+            - link "Comunidad ARMY Chile" [ref=e120] [cursor=pointer]:
+              - /url: /comunidad
+          - listitem [ref=e121]:
+            - link "Membresía ARMY Boom v4" [ref=e122] [cursor=pointer]:
+              - /url: /membresia
+      - generic [ref=e123]:
+        - heading "Newsletter ARMY" [level=2] [ref=e124]
+        - paragraph [ref=e125]: Recibe novedades de entradas y noticias 💜
+        - generic [ref=e126]:
+          - textbox "Correo electrónico" [ref=e127]:
+            - /placeholder: tu@email.com
+          - button "Suscribirme" [ref=e128]
+    - generic [ref=e129]: © 2026 BTS Chile · Comunidad de fans · "Purple you, ARMY Chile 💜"
+  - button "Open Next.js Dev Tools" [ref=e135] [cursor=pointer]
+  - alert [ref=e139]

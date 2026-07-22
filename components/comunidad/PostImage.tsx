@@ -8,7 +8,7 @@
  * - Clickeable en móvil para abrir lightbox con zoom
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageLightbox } from "@/components/comunidad/ImageLightbox";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { cn } from "@/lib/utils/cn";
@@ -23,6 +23,14 @@ interface PostImageProps {
 export function PostImage({ src, alt, className, clickable = true }: PostImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // En carga directa SSR, la imagen puede terminar de cargar antes de hidratarse.
+  // `complete` evita que quede transparente esperando un onLoad que ya ocurrió.
+  useEffect(() => {
+    setLoaded(false);
+    if (imageRef.current?.complete) setLoaded(true);
+  }, [src]);
 
   const handleClick = () => {
     if (clickable) {
@@ -38,6 +46,7 @@ export function PostImage({ src, alt, className, clickable = true }: PostImagePr
 
         {/* Imagen completa - clickeable en móvil */}
         <img
+          ref={imageRef}
           src={src}
           alt={alt}
           onLoad={() => setLoaded(true)}
