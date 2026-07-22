@@ -160,7 +160,7 @@ export function PostCard({ post }: { post: WithId<Post> }) {
 
       {post.imageURL && (
         <Link href={`/comunidad/${post.id}`} className="block">
-          <PostImage src={post.imageURL} alt={post.content || "Imagen del post"} />
+          <PostImage src={post.imageURL} alt={post.content || "Imagen del post"} clickable={false} />
         </Link>
       )}
 

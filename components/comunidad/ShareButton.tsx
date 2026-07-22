@@ -67,7 +67,7 @@ export function ShareButton({ url, text }: ShareButtonProps) {
       </button>
 
       {open && (
-        <div className="absolute left-0 bottom-full mb-2 z-50 glass-modal rounded-2xl overflow-hidden shadow-xl min-w-[180px]">
+        <div className="absolute right-0 bottom-full mb-2 z-50 glass-modal rounded-2xl overflow-hidden shadow-xl min-w-[180px]">
           <button
             type="button"
             onClick={handleWhatsApp}

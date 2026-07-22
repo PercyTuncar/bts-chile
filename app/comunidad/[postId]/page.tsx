@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AlbumGallery } from "@/components/comunidad/AlbumGallery";
 import { CommentsSection } from "@/components/comunidad/CommentsSection";
 import { PollView } from "@/components/comunidad/PollView";
 import { PostContent } from "@/components/comunidad/PostContent";
+import { PostHeader } from "@/components/comunidad/PostHeader";
 import { PostImage } from "@/components/comunidad/PostImage";
 import { ReactionPicker } from "@/components/comunidad/ReactionPicker";
 import { ShareButton } from "@/components/comunidad/ShareButton";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { AdminBadge, MembershipBadge } from "@/components/ui/Badge";
 import { getPost } from "@/lib/firestore/posts";
 import { CATEGORY_LABEL } from "@/lib/comunidad/reactions";
 import { formatRelative, toISOString } from "@/lib/utils/formatters";
 import { absoluteUrl, buildBreadcrumbList, buildGraph, SITE_URL } from "@/lib/utils/seo";
+import { cn } from "@/lib/utils/cn";
 import type { Post } from "@/types";
 
 type Params = { params: Promise<{ postId: string }> };
@@ -104,7 +104,7 @@ export default async function PostPage({ params }: Params) {
   const createdDate = created?.toDate ? created.toDate() : new Date();
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10">
+    <main className="mx-auto max-w-7xl px-6 py-10">
       <JsonLd data={jsonLd} />
 
       {/* Breadcrumb */}
@@ -113,75 +113,89 @@ export default async function PostPage({ params }: Params) {
         <Link href="/comunidad" className="hover:text-brand">Comunidad</Link> › <span>{headline}…</span>
       </nav>
 
-      <article
-        className={
-          post.authorRole === "admin"
-            ? "glass-card aurora rounded-card p-6 ring-1 ring-[color-mix(in_srgb,var(--brand)_45%,transparent)] shadow-[0_10px_36px_color-mix(in_srgb,var(--brand)_18%,transparent)]"
-            : "glass-card rounded-card p-6"
-        }
-      >
-        <div className="mb-4 flex items-center gap-3">
-          <Link
-            href={`/perfil/${post.authorUsername || post.authorUid}`}
-            className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-2 ${
-              post.authorRole === "admin" ? "ring-accent" : "ring-brand"
-            }`}
-          >
-            {post.authorPhotoURL ? (
-              <Image src={post.authorPhotoURL} alt={post.authorNickname} fill sizes="44px" className="object-cover" />
+      {/* Layout de 2 columnas en desktop, 1 columna en móvil */}
+      <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-180px)]">
+        {/* Columna izquierda: Imagen o Álbum (solo visible en desktop) */}
+        {(post.imageURL || ((post.type ?? "text") === "album" && post.images && post.images.length > 0)) && (
+          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center lg:bg-surface lg:rounded-2xl lg:p-4">
+            {post.imageURL ? (
+              <PostImage src={post.imageURL} alt={headline} className="lg:max-h-full" />
             ) : (
-              <span className="flex h-full w-full items-center justify-center bg-brand-soft">💜</span>
+              <AlbumGallery images={post.images!} />
             )}
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <Link href={`/perfil/${post.authorUsername || post.authorUid}`} className="font-semibold hover:text-brand">
-                {post.authorNickname}
-              </Link>
-              {post.authorRole === "admin" ? (
-                <AdminBadge />
-              ) : (
-                <MembershipBadge type={post.authorMembership} />
-              )}
+          </div>
+        )}
+
+        {/* Columna derecha: Contenido y comentarios */}
+        <article
+          className={cn(
+            "lg:flex-1 lg:flex lg:flex-col lg:overflow-hidden",
+            post.authorRole === "admin"
+              ? "glass-card aurora rounded-card p-6 ring-1 ring-[color-mix(in_srgb,var(--brand)_45%,transparent)] shadow-[0_10px_36px_color-mix(in_srgb,var(--brand)_18%,transparent)]"
+              : "glass-card rounded-card p-6"
+          )}
+        >
+          {/* Contenido scrolleable en desktop */}
+          <div className="lg:flex-1 lg:overflow-y-auto lg:pr-2">
+            <PostHeader
+              postId={postId}
+              authorUid={post.authorUid}
+              authorUsername={post.authorUsername}
+              authorNickname={post.authorNickname}
+              authorPhotoURL={post.authorPhotoURL}
+              authorRole={post.authorRole}
+              authorMembership={post.authorMembership}
+              createdAt={createdDate}
+              category={post.category}
+              isAurora={post.authorRole === "admin"}
+            />
+
+            <h1 className="sr-only">{headline}…</h1>
+            {post.content && (
+              <div className="text-lg mb-4">
+                <PostContent content={post.content} richContent={post.richContent} />
+              </div>
+            )}
+
+            {/* Imagen en móvil */}
+            {post.imageURL && (
+              <div className="mb-4 lg:hidden">
+                <PostImage src={post.imageURL} alt={headline} />
+              </div>
+            )}
+
+            {/* Acciones justo debajo de la imagen en móvil, arriba en desktop */}
+            <div className="flex items-center justify-between border-y border-[color-mix(in_srgb,var(--text)_8%,transparent)] py-3 mb-4 lg:hidden">
+              <ReactionPicker postId={postId} counts={post.reactionCounts} />
+              <ShareButton url={url} text={`ARMY opina: ${headline}…`} />
             </div>
-            <p className="text-xs text-text-muted">
-              {formatRelative(createdDate)} · {CATEGORY_LABEL[post.category]}
-            </p>
+
+            {(post.type ?? "text") === "poll" && post.poll && (
+              <div className="mt-4">
+                <PollView postId={postId} poll={post.poll} />
+              </div>
+            )}
+
+            {/* Álbum en móvil */}
+            {(post.type ?? "text") === "album" && post.images && post.images.length > 0 && (
+              <div className="mb-4 lg:hidden">
+                <AlbumGallery images={post.images} />
+              </div>
+            )}
+
+            {/* Sección de comentarios */}
+            <div className="lg:mt-6">
+              <CommentsSection postId={postId} />
+            </div>
           </div>
-        </div>
 
-        <h1 className="sr-only">{headline}…</h1>
-        {post.content && (
-          <div className="text-lg">
-            <PostContent content={post.content} richContent={post.richContent} />
+          {/* Acciones fijas solo en desktop */}
+          <div className="hidden lg:flex mt-4 items-center justify-between border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] pt-4 flex-shrink-0">
+            <ReactionPicker postId={postId} counts={post.reactionCounts} />
+            <ShareButton url={url} text={`ARMY opina: ${headline}…`} />
           </div>
-        )}
-
-        {(post.type ?? "text") === "poll" && post.poll && (
-          <div className="mt-4">
-            <PollView postId={postId} poll={post.poll} />
-          </div>
-        )}
-
-        {(post.type ?? "text") === "album" && post.images && post.images.length > 0 && (
-          <div className="mt-4">
-            <AlbumGallery images={post.images} />
-          </div>
-        )}
-
-        {post.imageURL && (
-          <div className="mt-4">
-            <PostImage src={post.imageURL} alt={headline} />
-          </div>
-        )}
-
-        <div className="mt-5 flex items-center justify-between border-t border-[color-mix(in_srgb,var(--text)_8%,transparent)] pt-4">
-          <ReactionPicker postId={postId} counts={post.reactionCounts} />
-          <ShareButton url={url} text={`ARMY opina: ${headline}…`} />
-        </div>
-      </article>
-
-      <CommentsSection postId={postId} />
+        </article>
+      </div>
     </main>
   );
 }
