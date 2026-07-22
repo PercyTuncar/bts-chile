@@ -101,7 +101,7 @@ export default async function NoticiaPage({ params }: Params) {
         <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-text-muted">
           <Badge tone="brand">Admin</Badge>
           <span>{news.authorName}</span>
-          <span>· {formatDateLong(published)}</span>
+          {news.publishedAt && <span>· {formatDateLong(news.publishedAt)}</span>}
           <span>· {news.readingTimeMinutes} min de lectura</span>
         </div>
 
