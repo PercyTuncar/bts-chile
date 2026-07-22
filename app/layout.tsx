@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import "../styles/globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -33,6 +33,14 @@ export const metadata: Metadata = {
   description:
     "La comunidad oficial de ARMY en Chile. Entradas BTS Chile 2026 verificadas, noticias, membresía ARMY Boom v4 y tienda de merchandise.",
   manifest: "/site.webmanifest",
+};
+
+// Evita el zoom automático de Safari iOS al enfocar campos de texto, sin cambiar el layout.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 // Script anti-FOUC: fija la clase de tema en el primer paint (localStorage + prefers-color-scheme).
