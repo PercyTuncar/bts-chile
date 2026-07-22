@@ -333,19 +333,35 @@ export interface Report {
 // --------------------------------------------------------------------------
 export interface News {
   slug: string;
-  title: string; // ≤ 100
-  excerpt: string; // ≤ 160
-  content: string; // HTML
-  featuredImageURL: string; // ≥ 1200×630
+  title: string; // ≤ 100 (H1 único de la página)
+  excerpt: string; // ≤ 160 (meta description)
+  content: string; // MARKDOWN (convertido desde BlockNote)
+
+  // Imágenes (4 tipos distintos para diferentes propósitos)
+  featuredImageURL: string; // Hero 16:9, ≥ 1200px ancho
+  seoImageSquareURL?: string; // 1:1, ≥1200×1200px para Google NewsArticle
+  ogImageURL?: string; // 1200×630px para redes sociales
+  twitterImageURL?: string; // 1200×675px opcional para X/Twitter
+  imageAlt?: string; // Alt text para accesibilidad y SEO
+
+  // SEO avanzado
+  metaTitle?: string; // Si difiere del title, máx 60 caracteres
+  headline?: string; // Para JSON-LD NewsArticle, máx 110 caracteres
+
   category: NewsCategory;
   tags: string[];
   authorUid: string;
   authorName: string;
+  authorUrl?: string; // URL del perfil del autor para JSON-LD
   status: NewsStatus;
-  publishedAt: Timestamp | null;
+
+  // Timestamps (críticos para Google News)
+  publishedAt: Timestamp | null; // Debe incluir timezone
+  dateModified: Timestamp | null; // Solo cambios reales de contenido
   scheduledFor: Timestamp | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+
   viewCount: number;
   readingTimeMinutes: number;
 }

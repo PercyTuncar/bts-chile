@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/Badge";
 import { getNews, getRelatedNews } from "@/lib/firestore/news";
 import { NEWS_CATEGORY_LABEL } from "@/lib/noticias/categories";
 import { formatDateLong, toISOString } from "@/lib/utils/formatters";
-import { absoluteUrl, buildBreadcrumbList, buildGraph, SITE_URL } from "@/lib/utils/seo";
+import { absoluteUrl, SITE_URL } from "@/lib/utils/seo";
+import { generateArticlePageLD } from "@/lib/seo/json-ld";
 import type { News } from "@/types";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -28,18 +29,39 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     news = null;
   }
   if (!news) return { title: "Noticia", robots: { index: false } };
+
   const published = news.publishedAt ? toISOString(news.publishedAt) : undefined;
+
+  // Usar metaTitle si existe, sino el título normal
+  const metaTitle = news.metaTitle || news.title;
+
+  // Usar imagen OG si existe, sino la hero
+  const ogImage = news.ogImageURL || news.featuredImageURL || `${SITE_URL}/og-noticias.jpg`;
+
   return {
-    title: news.title,
+    title: metaTitle,
     description: news.excerpt,
     alternates: { canonical: absoluteUrl(`/noticias/${slug}`) },
     openGraph: {
       type: "article",
-      title: news.title,
+      title: metaTitle,
       description: news.excerpt,
       url: absoluteUrl(`/noticias/${slug}`),
-      images: news.featuredImageURL ? [news.featuredImageURL] : [`${SITE_URL}/og-noticias.jpg`],
+      images: [ogImage],
       publishedTime: published,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: news.excerpt,
+      images: [news.twitterImageURL || ogImage],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
     },
   };
 }
@@ -55,48 +77,10 @@ export default async function NoticiaPage({ params }: Params) {
   if (!news || news.status !== "published") notFound();
 
   const related = await getRelatedNews(news.category, slug).catch(() => []);
-  const published = news.publishedAt ? toISOString(news.publishedAt) : new Date().toISOString();
-  const modified = news.updatedAt ? toISOString(news.updatedAt) : published;
-  const body = stripHtml(news.content);
   const url = absoluteUrl(`/noticias/${slug}`);
 
-  const jsonLd = buildGraph([
-    {
-      "@type": "NewsArticle",
-      "@id": `${url}#article`,
-      headline: news.title.slice(0, 110),
-      description: news.excerpt,
-      articleBody: body,
-      wordCount: body.split(" ").length,
-      image: {
-        "@type": "ImageObject",
-        url: news.featuredImageURL,
-        width: 1200,
-        height: 630,
-        caption: news.title,
-      },
-      thumbnailUrl: news.featuredImageURL,
-      datePublished: published,
-      dateModified: modified,
-      author: { "@type": "Organization", name: "BTS Chile", url: SITE_URL },
-      publisher: {
-        "@type": "Organization",
-        name: "BTS Chile",
-        url: SITE_URL,
-        logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png`, width: 512, height: 512 },
-      },
-      mainEntityOfPage: { "@type": "WebPage", "@id": url },
-      keywords: news.tags.join(", "),
-      articleSection: NEWS_CATEGORY_LABEL[news.category],
-      inLanguage: "es-CL",
-      isPartOf: { "@id": `${SITE_URL}/noticias#blog` },
-    },
-    buildBreadcrumbList([
-      { name: "Inicio", path: "/" },
-      { name: "Noticias", path: "/noticias" },
-      { name: news.title.slice(0, 60), path: `/noticias/${slug}` },
-    ]),
-  ]);
+  // Generar JSON-LD profesional optimizado para Google News
+  const jsonLd = generateArticlePageLD(news);
 
   return (
     <>

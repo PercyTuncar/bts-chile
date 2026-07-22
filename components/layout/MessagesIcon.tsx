@@ -1,7 +1,8 @@
 "use client";
 
 // Icono de mensajes con badge de no leídos — Etapa 3.
-// Para usuarios no logueados, muestra un badge "+1" llamativo que desaparece al hacer clic.
+// Para usuarios no logueados, muestra un badge "+1" llamativo que desaparece al hacer clic
+// y reaparece al recargar la página (incentivo para registrarse).
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
@@ -11,8 +12,6 @@ import { useArmyChatNotifications } from "@/hooks/useArmyChatNotifications";
 import { useConversations } from "@/hooks/useConversations";
 import { cn } from "@/lib/utils/cn";
 
-const GUEST_BADGE_KEY = "btschile:guest-messages-badge-dismissed";
-
 export function MessagesIcon() {
   const pathname = usePathname();
   const { status } = useAuth();
@@ -21,32 +20,32 @@ export function MessagesIcon() {
   const totalUnread = dmUnread + chatUnread;
   const active = pathname.startsWith("/mensajes");
 
-  // Badge para invitados: muestra "+1" hasta que hagan clic, persiste en localStorage
-  const [showGuestBadge, setShowGuestBadge] = useState(false);
+  // Badge para invitados: muestra "+1" hasta que hagan clic
+  // Se resetea en cada recarga de página (no persiste en storage)
+  const [dismissed, setDismissed] = useState(false); // Nueva variable para controlar si fue descartado
   const [showTooltip, setShowTooltip] = useState(false);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      const dismissed = localStorage.getItem(GUEST_BADGE_KEY);
-      const shouldShow = !dismissed;
-      setShowGuestBadge(shouldShow);
+  // Determinar si se debe mostrar el badge
+  const shouldShowBadge =
+    (status === "unauthenticated" || status === "loading") &&
+    !pathname.startsWith("/mensajes") &&
+    !dismissed;
 
-      // Mostrar tooltip por 3 segundos cuando aparece el badge
-      if (shouldShow) {
-        setShowTooltip(true);
-        const timer = setTimeout(() => setShowTooltip(false), 3000);
-        return () => clearTimeout(timer);
-      }
+  useEffect(() => {
+    // Mostrar tooltip por 3 segundos solo cuando el badge aparece por primera vez
+    if (shouldShowBadge && status === "unauthenticated") {
+      setShowTooltip(true);
+      const timer = setTimeout(() => setShowTooltip(false), 3000);
+      return () => clearTimeout(timer);
     } else {
-      setShowGuestBadge(false);
       setShowTooltip(false);
     }
-  }, [status]);
+  }, [shouldShowBadge, status]);
 
   function handleClick() {
-    if (status === "unauthenticated" && showGuestBadge) {
-      localStorage.setItem(GUEST_BADGE_KEY, "true");
-      setShowGuestBadge(false);
+    // Descartar el badge al hacer clic (persiste durante la navegación hasta recargar)
+    if (shouldShowBadge) {
+      setDismissed(true);
       setShowTooltip(false);
     }
   }
@@ -69,7 +68,7 @@ export function MessagesIcon() {
             {totalUnread > 9 ? "9+" : totalUnread}
           </span>
         )}
-        {status === "unauthenticated" && showGuestBadge && (
+        {shouldShowBadge && (
           <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[10px] font-bold text-white animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.6)]">
             +1
           </span>
@@ -77,7 +76,7 @@ export function MessagesIcon() {
       </Link>
 
       {/* Tooltip temporal "+1 nuevo mensaje" */}
-      {status === "unauthenticated" && showGuestBadge && showTooltip && (
+      {shouldShowBadge && showTooltip && (
         <div className="pointer-events-none absolute -bottom-12 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg bg-danger px-3 py-1.5 text-xs font-semibold text-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
           +1 nuevo mensaje
           <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-danger" />
