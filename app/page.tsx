@@ -21,14 +21,14 @@ import {
 // SEO — PRD §15.1.
 export const metadata: Metadata = {
   title: {
-    absolute: "BTS Chile — Comunidad ARMY & Noticias",
+    absolute: "BTS Chile 2026 | Entradas 100% Seguras",
   },
   description:
     "💜 Comunidad oficial ARMY Chile. Entradas BTS WORLD TOUR ARIRANG en el Estadio Nacional, 16 y 17 oct 2026. Desde $299 USD. Pago en cuotas. Noticias, tienda y membresía ARMY Boom v4.",
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
-    title: "BTS Chile — Entradas Verificadas & Comunidad ARMY 💜",
+    title: "BTS Chile 2026 | Entradas 100% Seguras",
     description:
       "La comunidad ARMY más grande de Chile. Entradas BTS 2026, noticias, merch y membresía exclusiva.",
     url: SITE_URL,
@@ -73,7 +73,7 @@ export default function Home() {
       "@type": "WebPage",
       "@id": `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: "BTS Chile — Entradas, Comunidad ARMY & Noticias Oficiales",
+      name: "BTS Chile 2026 | Entradas 100% Seguras y Asistencia ARMY",
       isPartOf: { "@id": `${SITE_URL}/#website` },
       about: { "@id": `${SITE_URL}/#organization` },
       description:
@@ -138,9 +138,9 @@ export default function Home() {
       <section className="aurora relative overflow-hidden">
         <HeartsBackground />
         <div className="mx-auto max-w-[1120px] px-6 py-10 text-center sm:py-14">
-          <h1 className="text-h1 font-bold tracking-tight sm:text-display">BTS Chile</h1>
+          <h1 className="text-h1 font-bold tracking-tight sm:text-display"> BTS CHILE 2026</h1>
           <p className="mx-auto mt-2 max-w-xl text-text-muted">
-            La comunidad oficial de ARMY en Chile 💜 Entradas, noticias, tienda y comunidad.
+            Asegura tus entradas para el concierto de BTS en Chile 2026. Asistencia de compra y gestión de tickets 100% segura para ARMY. ¡Garantiza tu acceso!
           </p>
         </div>
       </section>

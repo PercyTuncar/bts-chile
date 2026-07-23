@@ -27,11 +27,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.btschile.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "BTS Chile — Entradas, Comunidad ARMY & Noticias",
-    template: "%s | btschile.com",
+    default: "BTS Chile 2026 | Entradas 100% Seguras",
+    template: "%s | BTS WORLD TOUR ARIRANG",
   },
   description:
-    "La comunidad oficial de ARMY en Chile. Entradas BTS Chile 2026 verificadas, noticias, membresía ARMY Boom v4 y tienda de merchandise.",
+    "La comunidad oficial de ARMY en Chile. Entradas BTS Chile 2026 verificadas, noticias, membresía ARMY y tienda de merchandise.",
   manifest: "/site.webmanifest",
 };
 
