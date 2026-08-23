@@ -117,14 +117,13 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
 
-    // Posts: crear requiere membresía != free; leer si aprobado o admin; update status solo admin
+    // Posts: crear requiere solo auth; leer si aprobado o admin; update status solo admin
     match /posts/{postId} {
       allow read: if resource.data.status == 'approved' || isAdmin();
-      // Publicar requiere membresía de pago; el admin puede publicar aunque sea free.
+      // Publicar requiere solo autenticación (sin restricción de membresía).
       // Solo el admin puede crear ya 'approved' (auto-publicación sin revisión); el
       // resto debe entrar como 'pending' (moderación).
       allow create: if request.auth != null
-        && (membership() != 'free' || isAdmin())
         && (request.resource.data.status == 'pending' || isAdmin());
       // Update: admin puede cambiar cualquier campo; usuarios pueden actualizar su post
       // (cambios de contenido van a pendingEdit para revisión, excepto admin que edita directo)
@@ -194,5 +193,8 @@ service cloud.firestore {
     match /classes/{slug}         { allow read: if true; allow write: if isAdmin(); }
     match /waitlist/{id}          { allow create: if request.auth != null;
                                     allow read, update, delete: if isAdmin(); }
+
+    // Membresías Weverse: solo admin puede leer/escribir (registro manual)
+    match /membresiasWeverse/{id} { allow read, write: if isAdmin(); }
   }
 }

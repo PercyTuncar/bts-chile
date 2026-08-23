@@ -16,6 +16,7 @@ const NAV = [
   { href: "/panel-admin/noticias", label: "📝 Noticias" },
   { href: "/panel-admin/moderacion", label: "🗣 Moderación" },
   { href: "/panel-admin/membresias", label: "💜 Membresías" },
+  { href: "/panel-admin/membresias-weverse", label: "🌐 Membresías Weverse" },
   { href: "/panel-admin/cumpleanos", label: "🎂 Cumpleaños" },
   { href: "/panel-admin/newsletter", label: "📧 Newsletter" },
   { href: "/panel-admin/sponsors", label: "🤝 Sponsors" },
