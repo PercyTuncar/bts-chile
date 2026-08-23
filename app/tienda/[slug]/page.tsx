@@ -34,13 +34,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: product.name,
     description: product.description.slice(0, 160),
+    keywords: [product.name, "BTS", "merchandise", "tienda BTS Chile", product.category],
     alternates: { canonical: absoluteUrl(`/tienda/${slug}`) },
     openGraph: {
       type: "website",
       title: product.name,
       description: product.description.slice(0, 160),
       url: absoluteUrl(`/tienda/${slug}`),
+      images: product.imageURLs?.[0] ? [
+        {
+          url: product.imageURLs[0],
+          width: 800,
+          height: 800,
+          alt: product.name,
+        }
+      ] : [`${SITE_URL}/og-tienda.jpg`],
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@btschile",
+      title: product.name,
+      description: product.description.slice(0, 160),
       images: product.imageURLs?.[0] ? [product.imageURLs[0]] : [`${SITE_URL}/og-tienda.jpg`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
     },
   };
 }
@@ -100,6 +120,9 @@ export default async function ProductoPage({ params }: Params) {
     image: (product.imageURLs ?? []).slice(0, 3),
     brand: { "@type": "Brand", name: "BTS" },
     category: PRODUCT_CATEGORY_LABEL[product.category],
+    material: product.details.material,
+    color: product.details.colors?.map(c => c.name).join(", "),
+    inLanguage: "es-CL",
     offers: {
       "@type": "Offer",
       "@id": `${url}#offer`,
@@ -111,6 +134,9 @@ export default async function ProductoPage({ params }: Params) {
         product.totalStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       itemCondition,
       seller: { "@type": "Organization", name: "BTS Chile", url: SITE_URL },
+      acceptedPaymentMethod: [
+        { "@type": "PaymentMethod", "@id": "http://purl.org/goodrelations/v1#PayPal" },
+      ],
       shippingDetails: {
         "@type": "OfferShippingDetails",
         shippingRate: { "@type": "MonetaryAmount", value: "0", currency: "USD" },

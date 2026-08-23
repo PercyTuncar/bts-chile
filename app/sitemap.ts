@@ -56,12 +56,78 @@ async function dynamicEntries(): Promise<MetadataRoute.Sitemap> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE_URL, lastModified: now, changeFrequency: "daily", priority: 1.0 },
-    { url: `${SITE_URL}/entradas`, lastModified: now, changeFrequency: "hourly", priority: 0.95 },
-    { url: `${SITE_URL}/noticias`, lastModified: now, changeFrequency: "daily", priority: 0.85 },
-    { url: `${SITE_URL}/tienda`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
-    { url: `${SITE_URL}/comunidad`, lastModified: now, changeFrequency: "hourly", priority: 0.75 },
-    { url: `${SITE_URL}/membresia`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    {
+      url: SITE_URL,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+      alternates: {
+        languages: {
+          "es-CL": SITE_URL,
+          "es": SITE_URL,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/entradas`,
+      lastModified: now,
+      changeFrequency: "hourly",
+      priority: 0.95,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/entradas`,
+          "es": `${SITE_URL}/entradas`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/noticias`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.85,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/noticias`,
+          "es": `${SITE_URL}/noticias`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/tienda`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/tienda`,
+          "es": `${SITE_URL}/tienda`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/comunidad`,
+      lastModified: now,
+      changeFrequency: "hourly",
+      priority: 0.75,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/comunidad`,
+          "es": `${SITE_URL}/comunidad`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/membresia`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/membresia`,
+          "es": `${SITE_URL}/membresia`,
+        },
+      },
+    },
   ];
   return [...staticPages, ...(await dynamicEntries())];
 }

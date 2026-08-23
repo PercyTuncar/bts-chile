@@ -41,17 +41,36 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {
     title: metaTitle,
     description: news.excerpt,
+    keywords: news.tags,
+    authors: [{ name: news.authorName }],
+    creator: news.authorName,
+    publisher: "BTS Chile",
     alternates: { canonical: absoluteUrl(`/noticias/${slug}`) },
     openGraph: {
       type: "article",
       title: metaTitle,
       description: news.excerpt,
       url: absoluteUrl(`/noticias/${slug}`),
-      images: [ogImage],
+      siteName: "BTS Chile",
+      locale: "es_CL",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: news.title,
+        },
+      ],
       publishedTime: published,
+      modifiedTime: news.dateModified ? toISOString(news.dateModified) : published,
+      authors: [news.authorName],
+      section: news.category,
+      tags: news.tags,
     },
     twitter: {
       card: "summary_large_image",
+      site: "@btschile",
+      creator: "@btschile",
       title: metaTitle,
       description: news.excerpt,
       images: [news.twitterImageURL || ogImage],
@@ -62,6 +81,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       "max-snippet": -1,
       "max-image-preview": "large",
       "max-video-preview": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
+      },
+    },
+    other: {
+      "article:publisher": "https://www.facebook.com/btschile",
+      "article:author": news.authorName,
     },
   };
 }

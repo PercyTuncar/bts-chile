@@ -24,16 +24,28 @@ const DATE_PUBLISHED = "2026-04-07T13:00:00-03:00"; // salida a la venta
 const DATE_MODIFIED = "2026-07-22";
 
 export const metadata: Metadata = {
-  title: { absolute: "Entradas BTS Chile 2026 | Estadio Nacional, Santiago" },
+  title: { absolute: "Entradas BTS Chile | Disponible" },
   description:
-    "Compra entradas para BTS WORLD TOUR ARIRANG en Santiago: tres fechas en el Estadio Nacional Julio Martínez Prádanos, Ñuñoa. Consulta zonas, precios y disponibilidad.",
+    "Compra tus entradas para BTS en Chile 2026 desde $299 en el Estadio Nacional. Tres fechas: 14, 16 y 17 de octubre. Zonas y precios oficiales.",
+  keywords: [
+    "entradas bts chile",
+    "entradas bts chile 2026",
+    "bts estadio nacional",
+    "entradas bts santiago",
+    "concierto bts chile",
+    "entradas bts estadio nacional 2026",
+    "comprar entradas bts chile",
+    "bts world tour arirang chile",
+    "entradas bts octubre 2026",
+    "boletos bts chile",
+  ],
   alternates: { canonical: `${SITE_URL}/entradas` },
   openGraph: {
     type: "website",
     siteName: "BTS Chile",
-    title: "Entradas BTS Chile 2026 | Estadio Nacional, Santiago",
+    title: "Entradas BTS Chile | Disponible",
     description:
-      "BTS WORLD TOUR ARIRANG en Santiago: 14, 16 y 17 de octubre de 2026 en el Estadio Nacional Julio Martínez Prádanos.",
+      "Compra tus entradas para BTS en Chile 2026 desde $299 en el Estadio Nacional. Tres fechas: 14, 16 y 17 de octubre. Zonas y precios oficiales.",
     url: `${SITE_URL}/entradas`,
     locale: "es_CL",
     images: [
@@ -41,16 +53,24 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Entradas BTS Chile 2026 — Estadio Nacional",
+        alt: "Entradas BTS Chile 2026 — Estadio Nacional Santiago",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Entradas BTS Chile 2026 | Estadio Nacional, Santiago",
+    site: "@btschile",
+    title: "Entradas BTS Chile | Disponible",
     description:
-      "BTS WORLD TOUR ARIRANG en Santiago: 14, 16 y 17 de octubre de 2026 en el Estadio Nacional Julio Martínez Prádanos.",
+      "Compra tus entradas para BTS en Chile 2026 desde $299. Tres fechas: 14, 16 y 17 de octubre.",
     images: [OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    "max-video-preview": -1,
+    "max-image-preview": "large",
+    "max-snippet": -1,
   },
 };
 
@@ -85,30 +105,48 @@ export default async function EntradasPage() {
       "@type": "CollectionPage",
       "@id": `${SITE_URL}/entradas#webpage`,
       url: `${SITE_URL}/entradas`,
-      name: "Entradas BTS Chile 2026 — Estadio Nacional",
-       description:
-         "Compra entradas para el BTS WORLD TOUR ARIRANG en el Estadio Nacional Julio Martínez Prádanos de Santiago: 14, 16 y 17 de octubre de 2026.",
+      name: "Entradas BTS Chile 2026 — Estadio Nacional Santiago",
+      description:
+        "Compra entradas para el BTS WORLD TOUR ARIRANG en el Estadio Nacional Julio Martínez Prádanos de Santiago: 14, 16 y 17 de octubre de 2026. Zonas disponibles desde $299 USD con pago en cuotas.",
       isPartOf: { "@id": `${SITE_URL}/#website` },
       about: { "@id": `${SITE_URL}/entradas#event-series` },
-       mainEntity: { "@id": `${SITE_URL}/entradas#event-series` },
-       breadcrumb: { "@id": `${SITE_URL}/entradas#breadcrumb` },
+      mainEntity: { "@id": `${SITE_URL}/entradas#event-series` },
+      breadcrumb: { "@id": `${SITE_URL}/entradas#breadcrumb` },
       inLanguage: "es-CL",
       datePublished: DATE_PUBLISHED,
       dateModified: DATE_MODIFIED,
       publisher: { "@id": `${SITE_URL}/#organization` },
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        "@id": `${OG_IMAGE}#primaryimage`,
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        caption: "Entradas BTS Chile 2026 — Estadio Nacional Santiago",
+      },
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["#entradas-titulo", "#info-evento", "#zonas-precios"],
+      },
     },
     {
       "@type": "EventSeries",
       "@id": `${SITE_URL}/entradas#event-series`,
       name: 'BTS WORLD TOUR "ARIRANG" IN SANTIAGO 2026',
       description:
-        "BTS llega a Santiago con tres fechas del BTS WORLD TOUR ARIRANG en el Estadio Nacional: 14, 16 y 17 de octubre de 2026.",
+        "BTS llega a Santiago con tres fechas del BTS WORLD TOUR ARIRANG en el Estadio Nacional: 14, 16 y 17 de octubre de 2026. El grupo surcoreano de K-pop más exitoso del mundo regresa a Chile.",
       url: `${SITE_URL}/entradas`,
-      startDate: "2026-10-14",
-      endDate: "2026-10-17",
+      startDate: "2026-10-14T20:00:00-03:00",
+      endDate: "2026-10-17T23:00:00-03:00",
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      image: [OG_IMAGE, MAP_IMAGE],
       location: {
         "@type": "Place",
+        "@id": `${SITE_URL}/entradas#estadio-nacional`,
         name: "Estadio Nacional Julio Martínez Prádanos",
+        alternateName: ["Estadio Nacional", "Coloso de Ñuñoa"],
+        description: "El estadio más grande de Chile, ubicado en Ñuñoa, Santiago.",
         address: {
           "@type": "PostalAddress",
           streetAddress: "Av. Grecia 2001",
@@ -117,13 +155,59 @@ export default async function EntradasPage() {
           postalCode: "7750000",
           addressCountry: "CL",
         },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: -33.4646,
+          longitude: -70.6094,
+        },
+        maximumAttendeeCapacity: 48000,
+        publicAccess: true,
       },
       performer: {
         "@type": "MusicGroup",
         name: "BTS",
-        alternateName: ["방탄소년단", "Bangtan Sonyeondan", "Beyond The Scene"],
+        alternateName: ["방탄소년단", "Bangtan Sonyeondan", "Beyond The Scene", "Bangtan Boys"],
+        description: "Grupo surcoreano de K-pop formado por RM, Jin, Suga, J-Hope, Jimin, V y Jung Kook.",
+        genre: ["K-pop", "Pop", "Hip hop", "R&B"],
+        sameAs: [
+          "https://www.wikidata.org/wiki/Q18123741",
+          "https://en.wikipedia.org/wiki/BTS",
+          "https://www.instagram.com/bts.bighitofficial/",
+          "https://twitter.com/bts_bighit",
+        ],
+      },
+      organizer: {
+        "@id": `${SITE_URL}/#organization`,
+      },
+      offers: {
+        "@type": "AggregateOffer",
+        url: `${SITE_URL}/entradas`,
+        priceCurrency: "USD",
+        lowPrice: "299",
+        highPrice: "1784",
+        offerCount: zones.filter(z => z.isActive).length,
+        availability: "https://schema.org/LimitedAvailability",
+        validFrom: DATE_PUBLISHED,
+        priceValidUntil: "2026-10-17T23:59:59-03:00",
+        seller: {
+          "@id": `${SITE_URL}/#organization`,
+        },
+        priceSpecification: zones
+          .filter(z => z.isActive)
+          .map(z => ({
+            "@type": "PriceSpecification",
+            name: z.zoneName,
+            price: z.priceUSD,
+            priceCurrency: "USD",
+          })),
+        acceptedPaymentMethod: [
+          "http://purl.org/goodrelations/v1#PayPal",
+          "http://purl.org/goodrelations/v1#ByBankTransferInAdvance",
+        ],
       },
       inLanguage: "es-CL",
+      isAccessibleForFree: false,
+      typicalAgeRange: "13+",
     },
     {
       ...buildBreadcrumbList([

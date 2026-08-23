@@ -40,11 +40,13 @@ export function generateNewsArticleLD(news: News) {
   return {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
+    "@id": `${SITE_URL}/noticias/${news.slug}#article`,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/noticias/${news.slug}`,
     },
     headline,
+    alternativeHeadline: news.title !== headline ? news.title : undefined,
     description: news.excerpt,
     image: images.length > 0 ? images : undefined,
     datePublished,
@@ -56,7 +58,8 @@ export function generateNewsArticleLD(news: News) {
     },
     publisher: {
       "@type": "NewsMediaOrganization",
-      name: "Army Chile",
+      "@id": `${SITE_URL}/#organization`,
+      name: "BTS Chile",
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/logo-600x60.png`,
@@ -66,7 +69,17 @@ export function generateNewsArticleLD(news: News) {
     },
     articleSection: news.category,
     keywords: news.tags.join(", "),
+    wordCount: news.content ? news.content.split(/\s+/).length : undefined,
     inLanguage: "es-CL",
+    isAccessibleForFree: true,
+    copyrightYear: new Date(datePublished).getFullYear(),
+    copyrightHolder: {
+      "@id": `${SITE_URL}/#organization`,
+    },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["h1", "article > p:first-of-type"],
+    },
   };
 }
 
@@ -81,8 +94,9 @@ export function generateNewsMediaOrganizationLD() {
   return {
     "@context": "https://schema.org",
     "@type": "NewsMediaOrganization",
-    name: "Army Chile",
-    alternateName: "ArmyChile",
+    "@id": `${SITE_URL}/#organization`,
+    name: "BTS Chile",
+    alternateName: ["btschile.com", "BTS Chile Oficial"],
     url: SITE_URL,
     logo: {
       "@type": "ImageObject",
@@ -93,25 +107,25 @@ export function generateNewsMediaOrganizationLD() {
     description:
       "La comunidad oficial de ARMY en Chile. Noticias, eventos, entradas y contenido exclusivo de BTS y K-pop.",
     sameAs: [
-      "https://twitter.com/armychile",
-      "https://instagram.com/armychile",
-      "https://facebook.com/armychile",
-      // Agrega más redes sociales aquí
+      "https://twitter.com/btschile",
+      "https://instagram.com/btschile",
+      "https://facebook.com/btschile",
+      "https://www.tiktok.com/@btschile",
+      "https://www.youtube.com/@btschile",
     ],
-    foundingDate: "2018-01-01", // Ajusta a la fecha real
+    foundingDate: "2026-01-01",
     address: {
       "@type": "PostalAddress",
       addressCountry: "CL",
       addressRegion: "Región Metropolitana",
+      addressLocality: "Santiago",
     },
     areaServed: {
       "@type": "Country",
       name: "Chile",
+      identifier: "CL",
     },
-    // Opcional pero recomendado para Google News approval
-    ethicsPolicy: `${SITE_URL}/etica`,
-    diversityPolicy: `${SITE_URL}/diversidad`,
-    masthead: `${SITE_URL}/sobre-nosotros`,
+    knowsAbout: ["BTS", "K-pop", "ARMY", "Conciertos", "Música coreana"],
   };
 }
 

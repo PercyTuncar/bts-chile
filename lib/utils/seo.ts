@@ -120,3 +120,102 @@ export function buildBreadcrumbList(items: BreadcrumbItem[]): JsonLdData {
 export function buildGraph(nodes: JsonLdData[]): JsonLdData {
   return { "@context": "https://schema.org", "@graph": nodes };
 }
+
+/** Construye un LocalBusiness schema (si tienes ubicación física) */
+export function buildLocalBusiness(options: {
+  name: string;
+  address: {
+    street: string;
+    city: string;
+    region: string;
+    postalCode: string;
+  };
+  geo: {
+    latitude: number;
+    longitude: number;
+  };
+  phone?: string;
+  openingHours?: string[];
+}): JsonLdData {
+  return {
+    "@type": "LocalBusiness",
+    "@id": `${SITE_URL}/#localbusiness`,
+    name: options.name,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: options.address.street,
+      addressLocality: options.address.city,
+      addressRegion: options.address.region,
+      postalCode: options.address.postalCode,
+      addressCountry: "CL",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: options.geo.latitude,
+      longitude: options.geo.longitude,
+    },
+    telephone: options.phone,
+    openingHoursSpecification: options.openingHours?.map((hours) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: hours.split(" ")[0],
+      opens: hours.split(" ")[1],
+      closes: hours.split(" ")[2],
+    })),
+    priceRange: "$$",
+    areaServed: { "@type": "Country", name: "Chile", identifier: "CL" },
+  };
+}
+
+/** Construye un Product schema para la tienda */
+export function buildProduct(options: {
+  id: string;
+  name: string;
+  description: string;
+  image: string[];
+  price: number;
+  currency: string;
+  availability: string;
+  condition?: string;
+  brand?: string;
+  sku?: string;
+}): JsonLdData {
+  return {
+    "@type": "Product",
+    "@id": `${SITE_URL}/tienda/${options.id}#product`,
+    name: options.name,
+    description: options.description,
+    image: options.image,
+    brand: options.brand || "BTS Chile",
+    sku: options.sku || options.id,
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/tienda/${options.id}`,
+      priceCurrency: options.currency,
+      price: options.price,
+      availability: options.availability,
+      itemCondition: options.condition || "https://schema.org/NewCondition",
+      seller: {
+        "@id": `${SITE_URL}/#organization`,
+      },
+    },
+  };
+}
+
+/** Construye un FAQPage schema */
+export function buildFAQPage(
+  faqs: Array<{ question: string; answer: string }>,
+  pageId?: string
+): JsonLdData {
+  return {
+    "@type": "FAQPage",
+    "@id": pageId ? `${SITE_URL}${pageId}#faq` : undefined,
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}

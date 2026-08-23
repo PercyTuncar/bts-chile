@@ -1,0 +1,16 @@
+/* TEAM */
+Website: BTS Chile
+Location: Santiago, Chile
+Contact: contacto [at] btschile.com
+
+/* SITE */
+Last update: 2026-08-23
+Language: Spanish / Español (es-CL)
+Standards: HTML5, CSS3, JavaScript ES6+
+Components: Next.js 16, React 19, TypeScript 5
+Software: Visual Studio Code, Git
+
+/* THANKS */
+BTS: RM, Jin, Suga, J-Hope, Jimin, V, Jung Kook
+ARMY Chile: La comunidad más grande de fans de BTS en Chile
+BigHit Music / HYBE: Por la música que nos une
