@@ -93,6 +93,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     },
     {
+      url: `${SITE_URL}/sobre-bts`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/sobre-bts`,
+          "es": `${SITE_URL}/sobre-bts`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/preguntas-frecuentes`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.85,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/preguntas-frecuentes`,
+          "es": `${SITE_URL}/preguntas-frecuentes`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/como-llegar`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/como-llegar`,
+          "es": `${SITE_URL}/como-llegar`,
+        },
+      },
+    },
+    {
       url: `${SITE_URL}/tienda`,
       lastModified: now,
       changeFrequency: "daily",
@@ -125,6 +161,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         languages: {
           "es-CL": `${SITE_URL}/membresia`,
           "es": `${SITE_URL}/membresia`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/privacidad`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/privacidad`,
+          "es": `${SITE_URL}/privacidad`,
+        },
+      },
+    },
+    {
+      url: `${SITE_URL}/terminos`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+      alternates: {
+        languages: {
+          "es-CL": `${SITE_URL}/terminos`,
+          "es": `${SITE_URL}/terminos`,
         },
       },
     },

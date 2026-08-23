@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "../styles/globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { UsernameGate } from "@/components/auth/UsernameGate";
@@ -192,6 +193,7 @@ export default function RootLayout({
           <BottomNav />
         </AuthProvider>
         <ToastProvider />
+        <GoogleAnalytics gaId="G-5CWPLP0MMX" />
       </body>
     </html>
   );

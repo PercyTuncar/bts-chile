@@ -50,7 +50,7 @@ export async function GET() {
       <pubDate>${item.publishedAt ? new Date(item.publishedAt.toMillis()).toUTCString() : new Date().toUTCString()}</pubDate>
       <dc:creator>${escapeXml(item.authorName)}</dc:creator>
       <category>${escapeXml(item.category)}</category>
-      ${item.featuredImageURL ? `<enclosure url="${escapeXml(item.featuredImageURL)}" type="image/jpeg" />` : ""}
+      ${item.featuredImageURL ? `<enclosure url="${escapeXml(item.featuredImageURL)}" type="image/jpeg" length="0" />` : ""}
     </item>`
       )
       .join("")}

@@ -9,18 +9,18 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.btschile.com";
 
 /**
  * Sitemap dinámico de noticias para Google News.
- * Solo incluye artículos publicados en las ÚLTIMAS 48 HORAS.
- * Google exige este límite de tiempo para news sitemaps.
+ * Incluye artículos publicados en los ÚLTIMOS 7 DÍAS.
+ * Nota: Google News prefiere 48h, pero usamos 7 días para tener contenido mientras crece el sitio.
  *
  * URL: https://www.btschile.com/news-sitemap.xml
  * Documentación: https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap
  */
 export async function GET() {
   try {
-    // Calcular timestamp de hace 48 horas
+    // Calcular timestamp de hace 7 días (más flexible que 48h)
     const now = new Date();
-    const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-    const timestampCutoff = Timestamp.fromDate(fortyEightHoursAgo);
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const timestampCutoff = Timestamp.fromDate(sevenDaysAgo);
 
     // Query: solo publicados en últimas 48h
     const newsQuery = query(
@@ -47,7 +47,7 @@ export async function GET() {
       <loc>${SITE_URL}/noticias/${data.slug}</loc>
       <news:news>
         <news:publication>
-          <news:name>Army Chile</news:name>
+          <news:name>BTS Chile</news:name>
           <news:language>es</news:language>
         </news:publication>
         <news:publication_date>${publicationDate}</news:publication_date>
