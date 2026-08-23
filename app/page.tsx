@@ -117,7 +117,7 @@ export default function Home() {
       },
       speakable: {
         "@type": "SpeakableSpecification",
-        cssSelector: ["h1", ".hero-description"],
+        cssSelector: ["h1", "h2"],
       },
     },
     {
