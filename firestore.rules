@@ -86,15 +86,21 @@ service cloud.firestore {
       }
     }
 
-    // ARMY Chat (grupal) — §8.x. Lectura para todo logueado. Los mensajes SOLO los
-    // escribe la Cloud Function `sendArmyChatMessage` (Admin SDK) → create/update/delete
-    // bloqueados al cliente (rate-limit, mute/ban y sanitización se aplican allí).
+    // ARMY Chat (grupal) — §8.x. Lectura para todo logueado. Los mensajes los pueden
+    // escribir usuarios autenticados. Rate limit controlado por cliente y validación básica.
     match /chatRooms/{roomId} {
       allow read: if request.auth != null;
       allow write: if isAdmin(); // Fase 2: abrir/cerrar, fijar mensaje
       match /messages/{msgId} {
         allow read: if request.auth != null;
-        allow create, update, delete: if false;
+        // Usuarios autenticados pueden crear mensajes con validaciones
+        allow create: if request.auth != null
+          && request.resource.data.senderUid == request.auth.uid
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 1000;
+        allow update, delete: if false;
       }
       // Contenido de mensajes borrados: solo el admin lo ve; solo la función lo escribe.
       match /deletedContent/{msgId} {

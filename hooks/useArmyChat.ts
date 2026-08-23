@@ -8,9 +8,9 @@ import {
   subscribeChatRoom,
   subscribeLatestMessages,
   subscribeMyRate,
+  sendChatMessage,
   type ChatCursor,
 } from "@/lib/firestore/chat";
-import { sendArmyChatMessage, type SendChatInput } from "@/lib/functions";
 import type { ChatMessage, ChatRoom, WithId } from "@/types";
 
 export interface DisplayMessage extends Omit<WithId<ChatMessage>, "createdAt"> {
@@ -104,12 +104,32 @@ export function useArmyChat() {
       };
       setPendings((p) => [...p, temp]);
       try {
-        const res = await sendArmyChatMessage({ text, richContent, imageURL, replyTo });
-        if (res.cooldownUntil) setCooldownUntil((prev) => Math.max(prev ?? 0, res.cooldownUntil!));
-        // marca el temp con su id real para deduplicar contra la suscripción
-        setPendings((p) =>
-          p.map((m) => (m.id === tempId ? { ...m, id: res.id } : m)),
-        );
+        const res = await sendChatMessage({
+          senderUid: firebaseUser.uid,
+          senderNickname: profile.nickname || profile.displayName || "ARMY",
+          senderUsername: profile.username || firebaseUser.uid,
+          senderPhotoURL: profile.customPhotoURL || profile.photoURL || null,
+          senderMembership: profile.membershipType,
+          senderRole: profile.role,
+          text,
+          richContent,
+          imageURL,
+          replyTo,
+        });
+
+        if (!res.success) {
+          // Rate limit excedido
+          if (res.cooldownUntil) {
+            setCooldownUntil(res.cooldownUntil);
+          }
+          setPendings((p) => p.map((m) => (m.id === tempId ? { ...m, _failed: true } : m)));
+          throw new Error(res.error || "Error al enviar mensaje");
+        }
+
+        // Mensaje enviado exitosamente - el listener en tiempo real lo mostrará
+        if (res.messageId) {
+          setPendings((p) => p.map((m) => (m.id === tempId ? { ...m, id: res.messageId! } : m)));
+        }
       } catch (err: unknown) {
         const details = (err as { details?: { cooldownUntil?: number } })?.details;
         if (details?.cooldownUntil) setCooldownUntil(details.cooldownUntil);

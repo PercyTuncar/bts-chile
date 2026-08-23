@@ -1,7 +1,7 @@
-// ARMY Chat (grupal) — acceso a datos de lectura (cliente) — §8.x.
-// Escritura de mensajes: SOLO vía Cloud Function (lib/functions.ts → sendArmyChatMessage).
-// Aquí solo hay lecturas en tiempo real + carga progresiva por cursor.
+// ARMY Chat (grupal) — acceso a datos de lectura y escritura (cliente) — §8.x.
+// Los usuarios autenticados pueden enviar mensajes con rate limiting del lado del cliente.
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -21,10 +21,15 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { makeConverter } from "./converters";
-import type { ChatMessage, ChatRateState, ChatRoom, User, WithId } from "@/types";
+import type { ChatMessage, ChatRateState, ChatRoom, User, WithId, MembershipType, Role } from "@/types";
 
 export const ARMY_CHAT_ROOM_ID = "army-chat";
 export const CHAT_PAGE_SIZE = 30;
+
+// Rate limiting: 3 mensajes, luego cooldown de 3 segundos
+const RATE_LIMIT_MESSAGES = 3;
+const RATE_LIMIT_WINDOW_MS = 10000; // 10 segundos ventana
+const COOLDOWN_MS = 3000; // 3 segundos cooldown
 
 const messageConverter = makeConverter<ChatMessage>();
 
@@ -225,3 +230,112 @@ export async function setChatRead(uid: string, lastReadCount: number): Promise<v
 export async function setChatNotifMuted(uid: string, notifMuted: boolean): Promise<void> {
   await setDoc(readsDoc(uid), { notifMuted, updatedAt: serverTimestamp() }, { merge: true });
 }
+
+// --------------------------------------------------------------------------
+// Envío de mensajes con rate limiting (cliente)
+// --------------------------------------------------------------------------
+
+// Almacenamiento local de timestamps de mensajes enviados
+const MESSAGE_TIMESTAMPS_KEY = "armyChat_messageTimes";
+
+function getMessageTimestamps(uid: string): number[] {
+  try {
+    const stored = localStorage.getItem(`${MESSAGE_TIMESTAMPS_KEY}_${uid}`);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function setMessageTimestamps(uid: string, times: number[]): void {
+  try {
+    localStorage.setItem(`${MESSAGE_TIMESTAMPS_KEY}_${uid}`, JSON.stringify(times));
+  } catch {
+    // Ignorar errores de localStorage
+  }
+}
+
+export interface SendMessageInput {
+  senderUid: string;
+  senderNickname: string;
+  senderUsername: string;
+  senderPhotoURL: string | null;
+  senderMembership: MembershipType;
+  senderRole: Role;
+  text: string;
+  richContent?: string | null;
+  imageURL?: string | null;
+  replyTo?: { messageId: string; senderNickname: string; text: string } | null;
+}
+
+export interface SendMessageResult {
+  success: boolean;
+  messageId?: string;
+  cooldownUntil?: number;
+  error?: string;
+}
+
+/**
+ * Envía un mensaje al chat grupal con rate limiting del lado del cliente.
+ * Rate limit: máximo 3 mensajes en 10 segundos, luego cooldown de 3 segundos.
+ */
+export async function sendChatMessage(input: SendMessageInput): Promise<SendMessageResult> {
+  const now = Date.now();
+
+  // Obtener timestamps de mensajes previos
+  const timestamps = getMessageTimestamps(input.senderUid);
+
+  // Filtrar solo mensajes de los últimos 10 segundos
+  const recentMessages = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+
+  // Verificar si alcanzó el límite
+  if (recentMessages.length >= RATE_LIMIT_MESSAGES) {
+    const oldestRecent = Math.min(...recentMessages);
+    const cooldownUntil = oldestRecent + RATE_LIMIT_WINDOW_MS + COOLDOWN_MS;
+
+    return {
+      success: false,
+      cooldownUntil,
+      error: `Espera ${Math.ceil((cooldownUntil - now) / 1000)} segundos antes de enviar más mensajes`,
+    };
+  }
+
+  // Crear el mensaje
+  const message: Omit<ChatMessage, "id"> = {
+    senderUid: input.senderUid,
+    senderNickname: input.senderNickname,
+    senderUsername: input.senderUsername,
+    senderPhotoURL: input.senderPhotoURL,
+    senderMembership: input.senderMembership,
+    senderRole: input.senderRole,
+    text: input.text,
+    richContent: input.richContent || null,
+    imageURL: input.imageURL || null,
+    createdAt: serverTimestamp() as any,
+    editedAt: null,
+    deleted: false,
+    deletedBy: null,
+    pinned: false,
+    replyTo: input.replyTo || null,
+  };
+
+  try {
+    // Enviar a Firestore
+    const docRef = await addDoc(messagesCollection(), message);
+
+    // Actualizar timestamps locales
+    const newTimestamps = [...recentMessages, now];
+    setMessageTimestamps(input.senderUid, newTimestamps);
+
+    return {
+      success: true,
+      messageId: docRef.id,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || "Error al enviar mensaje",
+    };
+  }
+}
+
