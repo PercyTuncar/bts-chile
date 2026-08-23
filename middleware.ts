@@ -1,18 +1,9 @@
 // Middleware: marca rutas privadas/transaccionales como noindex — PRD §11, §15.12.
-// También maneja redirecciones canónicas (www, https)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  const hostname = request.headers.get("host") || "";
-
-  // Redirección canónica: siempre usar btschile.com (sin www)
-  // Google prefiere una versión consistente
-  if (hostname.startsWith("www.")) {
-    url.hostname = hostname.replace("www.", "");
-    return NextResponse.redirect(url, 301);
-  }
+  const url = request.nextUrl;
 
   // Para rutas privadas: noindex
   const isPrivateRoute = [
@@ -34,6 +25,10 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).)*",
+    "/panel-admin/:path*",
+    "/completar-perfil",
+    "/perfil/:path*",
+    "/entradas/comprar",
+    "/buscar",
   ],
 };
