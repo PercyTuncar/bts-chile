@@ -85,14 +85,14 @@ export function TicketSelector({
         {/* Opciones de cuotas */}
         <div>
           <p className="mb-3 text-sm font-semibold">Cuotas sin interés</p>
-          <SegmentedControl<number>
+          <SegmentedControl<string>
             ariaLabel="Número de cuotas"
-            value={installments}
-            onChange={onInstallments}
+            value={installments.toString()}
+            onChange={(val) => onInstallments(parseInt(val))}
             options={[
-              { value: 1, label: "1 cuota" },
-              { value: 2, label: "2 cuotas" },
-              { value: 3, label: "3 cuotas", disabled: true },
+              { value: "1", label: "1 cuota" },
+              { value: "2", label: "2 cuotas" },
+              { value: "3", label: "3 cuotas", disabled: true },
             ]}
           />
           {installments === 3 && (
