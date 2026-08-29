@@ -230,34 +230,166 @@ export default async function EntradasPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-[1120px] px-6 py-10">
+    <>
       <JsonLd data={jsonLd} />
 
-       {/* Hero */}
-       <section aria-labelledby="entradas-titulo" className="aurora ticket-hero mb-10 overflow-hidden rounded-card px-6 py-12 text-center sm:px-10 sm:py-16">
-         <div className="relative z-10">
-           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-brand">BTS Chile 2026</p>
-           <h1 id="entradas-titulo" className="text-h1 font-bold leading-[1.1] tracking-tight sm:text-display">
-             Entradas BTS Chile 2026 — Estadio Nacional
-           </h1>
-           <p className="mx-auto mt-4 max-w-2xl text-lg text-text-muted">
-              BTS WORLD TOUR &quot;ARIRANG&quot; IN SANTIAGO ·{" "}
-              <time dateTime="2026-10-14">14</time>,{" "}
-              <time dateTime="2026-10-16">16</time> y{" "}
-              <time dateTime="2026-10-17">17 de octubre de 2026</time>
-           </p>
-           <div className="mt-8 flex justify-center">
-             <CountdownTimer targetDate={EVENT_DATE} className="justify-center" />
-           </div>
-           <div className="mt-7 flex flex-wrap justify-center gap-2.5">
-             <span className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-2 text-sm font-medium"><LockKeyhole className="h-4 w-4 text-brand" aria-hidden />100% Seguro</span>
-             <span className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-2 text-sm font-medium"><ShieldCheck className="h-4 w-4 text-brand" aria-hidden />Vendedor Verificado</span>
-             <span className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-2 text-sm font-medium"><CreditCard className="h-4 w-4 text-brand" aria-hidden />Pago en Cuotas</span>
+      {/* Hero Moderno - Todo en viewport con simetría perfecta */}
+      <section aria-labelledby="entradas-titulo" className="relative h-[90vh] min-h-[700px] flex items-center overflow-hidden">
+        {/* Imagen de fondo */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://cdn-blog.joinnus.com/wp-content/uploads/2026/03/18171412/portada-bts-lanzamiento-de-album-arirang-info.jpg"
+            alt="BTS - ARIRANG World Tour 2026"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Overlay oscuro para legibilidad */}
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
+        </div>
+
+        {/* Contenido centrado */}
+        <div className="relative z-10 mx-auto w-full max-w-5xl px-6">
+          <div className="text-center space-y-8">
+
+            {/* Badge superior */}
+            <div className="flex justify-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-5 py-2.5">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand"></span>
+                </span>
+                <span className="text-sm font-bold text-white uppercase tracking-widest">Entradas Disponibles</span>
+              </div>
+            </div>
+
+            {/* Título principal */}
+            <div className="space-y-3">
+              <h1 id="entradas-titulo" className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white tracking-tight">
+                Entradas BTS Chile
+              </h1>
+              <p className="text-2xl sm:text-3xl text-white/90 font-medium">
+                World Tour ARIRANG 2026
+              </p>
+            </div>
+
+            {/* Info Grid - 3 columnas centradas más pequeñas */}
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 max-w-3xl mx-auto">
+              {/* Fecha */}
+              <div className="flex flex-col items-center gap-1.5 min-w-[120px]">
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+                  <CalendarDays className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-white/50 uppercase tracking-wider font-semibold mb-0.5">Fechas</p>
+                  <p className="text-white font-semibold text-sm">14, 16 y 17 Oct</p>
+                </div>
+              </div>
+
+              {/* Ubicación */}
+              <div className="flex flex-col items-center gap-1.5 min-w-[120px]">
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-white/50 uppercase tracking-wider font-semibold mb-0.5">Lugar</p>
+                  <p className="text-white font-semibold text-sm">Estadio Nacional</p>
+                </div>
+              </div>
+
+              {/* Precio */}
+              <div className="flex flex-col items-center gap-1.5 min-w-[120px]">
+                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center">
+                  <Ticket className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-white/50 uppercase tracking-wider font-semibold mb-0.5">Desde</p>
+                  <p className="text-white font-semibold text-sm">$299 USD</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Countdown compacto */}
+            <div className="inline-block">
+              <CountdownTimer targetDate={EVENT_DATE} className="justify-center" />
+            </div>
+
+            {/* CTA Button principal */}
+            <div className="flex justify-center pt-4">
+              <a
+                href="#zonas-precios"
+                className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-white/90 px-10 py-5 text-lg font-bold text-black transition-all hover:scale-105 shadow-2xl cursor-pointer"
+              >
+                <Ticket className="w-6 h-6" />
+                Ver Zonas y Precios
+              </a>
+            </div>
+
+            {/* Badges de confianza - horizontal */}
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                <ShieldCheck className="w-4 h-4" />
+                <span>100% Seguro</span>
+              </div>
+              <div className="w-px h-4 bg-white/30 hidden sm:block" />
+              <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                <LockKeyhole className="w-4 h-4" />
+                <span>Pago Protegido</span>
+              </div>
+              <div className="w-px h-4 bg-white/30 hidden sm:block" />
+              <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                <CreditCard className="w-4 h-4" />
+                <span>Cuotas Sin Interés</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </section>
+
+      <main className="mx-auto max-w-[1120px] px-6 pb-10 mt-12">
+
+       {/* Selector de fecha */}
+       <section className="mb-8">
+         <div className="rounded-card border border-[color-mix(in_srgb,var(--brand)_18%,transparent)] bg-[linear-gradient(135deg,color-mix(in_srgb,var(--brand-soft)_80%,transparent),transparent)] p-4 sm:p-5">
+           <div className="mb-4 flex items-start gap-3">
+             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand text-white"><CalendarDays className="h-5 w-5" aria-hidden /></span>
+             <div>
+               <h3 className="font-semibold">Selecciona la fecha del concierto</h3>
+               <p className="mt-0.5 text-sm text-text-muted">Solo 17 de octubre disponible - Otras fechas agotadas.</p>
+             </div>
            </div>
          </div>
        </section>
 
-       {/* Información del evento + mapa de ubicación */}
+       {/* Mapa + zonas + selección */}
+       <section aria-labelledby="zonas-precios" className="mb-14">
+         <div className="mb-6">
+           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand">Compra tus entradas</p>
+           <h2 id="zonas-precios" className="mt-1 text-h2 font-semibold">Zonas y precios</h2>
+         </div>
+         <EntradasView zones={zones} />
+       </section>
+
+       {/* Mapa de ubicación */}
+       <section aria-labelledby="mapa-ubicacion" className="mb-12">
+         <div className="mb-5">
+           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand">Ubicación</p>
+           <h2 id="mapa-ubicacion" className="mt-1 text-h2 font-semibold">Cómo llegar</h2>
+         </div>
+         <figure className="glass-card overflow-hidden rounded-card p-2 shadow-[0_12px_32px_color-mix(in_srgb,var(--text)_10%,transparent)]">
+           <SmartImage src={MAP_IMAGE} alt="Mapa de ubicación del Estadio Nacional Julio Martínez Prádanos en Ñuñoa, Santiago de Chile" rounded="rounded-xl" />
+           <figcaption className="flex items-center justify-center gap-2 px-2 py-3 text-center text-sm font-medium text-text-muted"><MapPin className="h-4 w-4 shrink-0 text-brand" aria-hidden />Cómo llegar al Estadio Nacional · Av. Grecia 2001, Ñuñoa, Santiago</figcaption>
+         </figure>
+       </section>
+
+       {/* Información del evento */}
        <section aria-labelledby="info-evento" className="mb-12">
          <div className="mb-5 flex items-end justify-between gap-4">
            <div>
@@ -265,29 +397,13 @@ export default async function EntradasPage() {
              <h2 id="info-evento" className="mt-1 text-h2 font-semibold">Información del evento</h2>
            </div>
          </div>
-         <div className="grid items-stretch gap-5 lg:grid-cols-2">
-           <GlassCard as="dl" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-             <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><Ticket className="h-4 w-4 text-brand" aria-hidden />Evento:</dt> <dd className="mt-1 font-semibold">BTS WORLD TOUR &quot;ARIRANG&quot; IN SANTIAGO</dd></div>
-             <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><CalendarDays className="h-4 w-4 text-brand" aria-hidden />Fechas:</dt> <dd className="mt-1">Miércoles <time dateTime="2026-10-14">14</time>, Viernes <time dateTime="2026-10-16">16</time> y Sábado <time dateTime="2026-10-17">17 de octubre de 2026</time></dd></div>
-             <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3"><dt className="flex items-center gap-2 text-sm text-text-muted"><MapPin className="h-4 w-4 text-brand" aria-hidden />Recinto:</dt> <dd className="mt-1 font-medium">Estadio Nacional Julio Martínez Prádanos</dd></div>
-             <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3"><dt className="flex items-center gap-2 text-sm text-text-muted"><UsersRound className="h-4 w-4 text-brand" aria-hidden />Capacidad:</dt> <dd className="mt-1 font-medium">~47,000 personas</dd></div>
-             <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><MapPin className="h-4 w-4 text-brand" aria-hidden />Dirección:</dt> <dd className="mt-1 font-medium">Av. Grecia 2001, Ñuñoa, Santiago</dd></div>
-           </GlassCard>
-
-           <figure className="glass-card overflow-hidden rounded-card p-2 shadow-[0_12px_32px_color-mix(in_srgb,var(--text)_10%,transparent)]">
-             <SmartImage src={MAP_IMAGE} alt="Mapa de ubicación del Estadio Nacional Julio Martínez Prádanos en Ñuñoa, Santiago de Chile" rounded="rounded-xl" />
-             <figcaption className="flex items-center justify-center gap-2 px-2 py-3 text-center text-sm font-medium text-text-muted"><MapPin className="h-4 w-4 shrink-0 text-brand" aria-hidden />Cómo llegar al Estadio Nacional · Av. Grecia 2001, Ñuñoa, Santiago</figcaption>
-           </figure>
-         </div>
-       </section>
-
-       {/* Mapa + zonas + selección */}
-       <section aria-labelledby="zonas-precios" className="mb-14 border-y border-[color-mix(in_srgb,var(--text)_9%,transparent)] py-10 sm:py-12">
-         <div className="mb-6">
-           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand">Compra tus entradas</p>
-           <h2 id="zonas-precios" className="mt-1 text-h2 font-semibold">Zonas y precios</h2>
-         </div>
-         <EntradasView zones={zones} />
+         <GlassCard as="dl" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+           <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><Ticket className="h-4 w-4 text-brand" aria-hidden />Evento:</dt> <dd className="mt-1 font-semibold">BTS WORLD TOUR &quot;ARIRANG&quot; IN SANTIAGO</dd></div>
+           <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><CalendarDays className="h-4 w-4 text-brand" aria-hidden />Fechas:</dt> <dd className="mt-1">Miércoles <time dateTime="2026-10-14">14</time>, Viernes <time dateTime="2026-10-16">16</time> y Sábado <time dateTime="2026-10-17">17 de octubre de 2026</time></dd></div>
+           <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3"><dt className="flex items-center gap-2 text-sm text-text-muted"><MapPin className="h-4 w-4 text-brand" aria-hidden />Recinto:</dt> <dd className="mt-1 font-medium">Estadio Nacional Julio Martínez Prádanos</dd></div>
+           <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3"><dt className="flex items-center gap-2 text-sm text-text-muted"><UsersRound className="h-4 w-4 text-brand" aria-hidden />Capacidad:</dt> <dd className="mt-1 font-medium">~47,000 personas</dd></div>
+           <div className="rounded-xl bg-[color-mix(in_srgb,var(--brand-soft)_60%,transparent)] p-3 sm:col-span-2"><dt className="flex items-center gap-2 text-sm text-text-muted"><MapPin className="h-4 w-4 text-brand" aria-hidden />Dirección:</dt> <dd className="mt-1 font-medium">Av. Grecia 2001, Ñuñoa, Santiago</dd></div>
+         </GlassCard>
        </section>
 
        {/* FAQ visible (= JSON-LD FAQPage) */}
@@ -390,6 +506,7 @@ export default async function EntradasPage() {
           </section>
           </div>
         </article>
-    </main>
+      </main>
+    </>
   );
 }

@@ -216,6 +216,44 @@
   animation: fab-pulse 1.1s cubic-bezier(0, 0, 0.2, 1) 3;
 }
 
+/* Animaciones para el popup de WhatsApp */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 2s ease-in-out infinite;
+}
+
 /* Respetar prefers-reduced-motion (obligatorio, PRD §3.2.E) */
 @media (prefers-reduced-motion: reduce) {
   *,

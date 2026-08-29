@@ -8,6 +8,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ToastProvider } from "@/components/ui/Toast";
+import { WhatsAppPopup } from "@/components/ui/WhatsAppPopup";
 
 // Tipografía SF Pro-like — PRD §3.2.C. Self-hosted por next/font, display swap, subsetting.
 const inter = Inter({
@@ -193,6 +194,7 @@ export default function RootLayout({
           <BottomNav />
         </AuthProvider>
         <ToastProvider />
+        <WhatsAppPopup />
         <GoogleAnalytics gaId="G-5CWPLP0MMX" />
       </body>
     </html>

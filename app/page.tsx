@@ -5,11 +5,12 @@ import { HeartsBackground } from "@/components/layout/HeartsBackground";
 import { HomeComposer } from "@/components/comunidad/HomeComposer";
 import { PostFeed } from "@/components/comunidad/PostFeed";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { PillButton } from "@/components/ui/PillButton";
 import { Reveal } from "@/components/ui/Reveal";
+import { UpcomingEvents } from "@/components/home/UpcomingEvents";
+import { TrendingNews } from "@/components/home/TrendingNews";
+import { BirthdayWidget } from "@/components/home/BirthdayWidget";
+import { QuickLinks } from "@/components/home/QuickLinks";
 import { NAV_LINKS } from "@/lib/nav";
-import { TIERS } from "@/lib/membership";
-import { formatUSD } from "@/lib/utils/formatters";
 import {
   buildBreadcrumbList,
   buildGraph,
@@ -21,10 +22,10 @@ import {
 // SEO — PRD §15.1.
 export const metadata: Metadata = {
   title: {
-    absolute: "BTS Chile",
+    absolute: "BTS Chile - Comunidad Oficial Kpop | Entradas 2026 Estadio Nacional",
   },
   description:
-    "BTS en Chile - Precios de las entradas disponible aqui, ARIRANG World Tour 2026 · Estadio Nacional Julio Martínez Prádanos",
+    "BTS Chile es la comunidad oficial de Kpop en el país. Compra entradas 100% seguras para el concierto BTS 2026 en el Estadio Nacional Santiago: 14, 16 y 17 de octubre. Únete a miles de ARMY chilenas.",
   keywords: [
     "bts chile",
     "entradas bts chile",
@@ -36,13 +37,17 @@ export const metadata: Metadata = {
     "entradas bts santiago",
     "bts world tour arirang chile",
     "comunidad army chile",
+    "kpop chile",
+    "fan club bts chile",
+    "noticias bts",
+    "tienda bts chile",
   ],
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: "website",
-    title: "BTS Chile",
+    title: "BTS Chile - Comunidad Oficial Kpop | Entradas 2026",
     description:
-      "BTS en Chile - Precios de las entradas disponible aqui, ARIRANG World Tour 2026 · Estadio Nacional Julio Martínez Prádanos",
+      "Comunidad oficial de Kpop en Chile. Entradas 100% seguras para BTS 2026 en Estadio Nacional Santiago. Noticias, tienda oficial y membresía ARMY.",
     url: SITE_URL,
     siteName: "BTS Chile",
     locale: "es_CL",
@@ -58,9 +63,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@btschile",
-    title: "BTS Chile",
+    title: "BTS Chile - Comunidad Oficial Kpop",
     description:
-      "BTS en Chile - Precios de las entradas disponible aqui, ARIRANG World Tour 2026",
+      "Comunidad oficial de Kpop en Chile. Entradas BTS 2026, noticias, tienda y membresía ARMY.",
     images: [`${SITE_URL}/og-home.jpg`],
   },
 };
@@ -100,11 +105,11 @@ export default function Home() {
       "@type": "WebPage",
       "@id": `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: "BTS Chile 2026 | Entradas 100% Seguras y Asistencia ARMY",
+      name: "BTS Chile 2026 | Comunidad Oficial Kpop y Entradas 100% Seguras",
       isPartOf: { "@id": `${SITE_URL}/#website` },
       about: { "@id": `${SITE_URL}/#organization` },
       description:
-        "La comunidad oficial de BTS en Chile. Compra entradas verificadas para el concierto BTS Chile 2026, lee noticias K-pop, únete a la membresía ARMY Boom v4 y conecta con miles de fans.",
+        "La comunidad oficial de Kpop en Chile. Compra entradas verificadas para el concierto BTS Chile 2026 en Estadio Nacional Santiago (14, 16 y 17 de octubre), lee las últimas noticias K-pop, únete a la membresía ARMY Boom v4 y conecta con miles de fans chilenas. Próximos eventos, tienda oficial y contenido exclusivo.",
       inLanguage: "es-CL",
       breadcrumb: buildBreadcrumbList([{ name: "BTS Chile", path: "/" }]),
       primaryImageOfPage: {
@@ -241,30 +246,132 @@ export default function Home() {
     <>
       <JsonLd data={jsonLd} />
 
-      {/* HERO compacto — H1 de SEO */}
-      <section className="aurora relative overflow-hidden" aria-label="Hero principal">
-        <HeartsBackground />
-        <div className="mx-auto max-w-[1120px] px-6 py-10 text-center sm:py-14">
-          <h1 className="text-h1 font-bold tracking-tight sm:text-display">Entradas BTS Chile 2026 — Estadio Nacional</h1>
-          <p className="mx-auto mt-2 max-w-xl text-text-muted">
-            La comunidad oficial de ARMY en Chile. Compra entradas BTS Chile 2026 100% seguras para el concierto en el Estadio Nacional Santiago: 14, 16 y 17 de octubre. Desde $299 USD con pago en cuotas.
+      {/* HERO estilo Netflix con imagen de fondo */}
+      <section
+        className="relative min-h-[85vh] flex items-end overflow-hidden"
+        aria-label="Hero principal"
+      >
+        {/* Imagen de fondo */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://cdn-blog.joinnus.com/wp-content/uploads/2026/03/18171412/portada-bts-lanzamiento-de-album-arirang-info.jpg"
+            alt="BTS - ARIRANG World Tour 2026"
+            className="w-full h-full object-cover object-center md:object-[center_30%]"
+          />
+          {/* Overlay con gradientes para legibilidad */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          {/* Overlay adicional para modo claro */}
+          <div className="absolute inset-0 bg-black/20 dark:bg-black/0" />
+        </div>
+
+        {/* Contenido */}
+        <div className="relative z-10 mx-auto w-full max-w-[1120px] px-6 pb-16 pt-32 sm:pb-20">
+          {/* Badge */}
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md px-4 py-2 text-sm font-medium text-white border border-white/20">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+            Entradas disponibles
+          </div>
+
+          {/* Título principal */}
+          <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl max-w-3xl">
+            BTS Chile
+          </h1>
+
+          {/* Descripción */}
+          <p className="mt-4 max-w-2xl text-lg sm:text-xl text-white/90 leading-relaxed">
+            BTS Chile es la comunidad oficial de Kpop en el país.
           </p>
+
+          {/* Información adicional */}
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-white/80">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+              <span>Estadio Nacional, Santiago</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+              </svg>
+              <span>14, 16 y 17 de octubre 2026</span>
+            </div>
+          </div>
+
+          {/* Botones de acción */}
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link href="/entradas">
+              <button className="group relative inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 text-base font-semibold text-black transition-all hover:scale-105 hover:shadow-xl cursor-pointer">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z" />
+                </svg>
+                Comprar Entradas
+              </button>
+            </Link>
+            <Link href="/comunidad">
+              <button className="group inline-flex items-center gap-2 rounded-full bg-white/10 dark:bg-white/5 backdrop-blur-md px-8 py-4 text-base font-semibold text-white border border-white/20 transition-all hover:bg-white/20 hover:scale-105 cursor-pointer">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+                Unirse a la Comunidad
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+          <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </div>
       </section>
 
-      {/* Composer estilo Facebook (crear publicación) */}
-      <section className="mx-auto -mt-3 max-w-[1120px] px-6">
-        <HomeComposer />
-      </section>
+      {/* Espaciado entre hero y siguiente sección */}
+      <div className="h-12 sm:h-16 bg-gradient-to-b from-black/5 to-transparent dark:from-black/20" />
 
-      {/* FEED de la comunidad (scroll infinito) */}
-      <section className="mx-auto mt-8 max-w-2xl px-6">
-        <h2 className="sr-only">Publicaciones de la comunidad</h2>
-        <PostFeed infinite />
-      </section>
+      {/* LAYOUT DE 3 COLUMNAS tipo Facebook - Solo visible en desktop */}
+      <div className="mx-auto max-w-[1400px] px-6 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+          {/* COLUMNA IZQUIERDA - Sidebar (Desktop only) */}
+          <aside className="hidden lg:block lg:col-span-3 space-y-4">
+            <div className="sticky top-20">
+              <QuickLinks />
+            </div>
+          </aside>
+
+          {/* COLUMNA CENTRAL - Feed Principal */}
+          <main className="lg:col-span-6">
+            {/* Composer estilo Facebook (crear publicación) */}
+            <section className="mb-6">
+              <HomeComposer />
+            </section>
+
+            {/* FEED de la comunidad (scroll infinito) */}
+            <section>
+              <h2 className="sr-only">Publicaciones de la comunidad</h2>
+              <PostFeed infinite />
+            </section>
+          </main>
+
+          {/* COLUMNA DERECHA - Widgets (Desktop only) */}
+          <aside className="hidden lg:block lg:col-span-3 space-y-4">
+            <div className="sticky top-20 space-y-4">
+              <BirthdayWidget />
+              <UpcomingEvents />
+              <TrendingNews />
+            </div>
+          </aside>
+        </div>
+      </div>
 
       {/* SECCIONES */}
-      <section className="mx-auto max-w-[1120px] px-6 pb-16 pt-12">
+      <section className="mx-auto max-w-[1120px] px-6 pb-20 pt-12">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {SECTIONS.map((s, i) => (
             <Reveal key={s.href} delay={i * 0.05}>
@@ -280,32 +387,6 @@ export default function Home() {
             </Reveal>
           ))}
         </div>
-      </section>
-
-      {/* MINI PRICING */}
-      <section className="mx-auto max-w-[1120px] px-6 pb-20">
-        <Reveal>
-          <GlassCard className="aurora flex flex-col items-center gap-6 rounded-card px-6 py-12 text-center">
-            <div>
-              <h2 className="text-h2 font-semibold">Membresía ARMY Boom v4</h2>
-              <p className="mt-1 text-text-muted">
-                1 mes gratis, luego desde $1 USD/mes. Publica en comunidad y accede a beneficios.
-              </p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-4">
-              {TIERS.filter((t) => t.key !== "free").map((t) => (
-                <div key={t.key} className="min-w-[120px] rounded-2xl glass px-5 py-4">
-                  <p className="text-sm text-text-muted">{t.name}</p>
-                  <p className="text-2xl font-bold tabular-nums">{formatUSD(t.monthlyUSD)}</p>
-                  <p className="text-xs text-text-muted">/mes</p>
-                </div>
-              ))}
-            </div>
-            <Link href="/membresia">
-              <PillButton>Ver planes 💜</PillButton>
-            </Link>
-          </GlassCard>
-        </Reveal>
       </section>
     </>
   );

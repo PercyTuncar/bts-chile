@@ -4,7 +4,9 @@
       "WebSearch",
       "PowerShell(.\\\\scripts\\\\download-og-placeholders.ps1)",
       "PowerShell(npm run build 2>&1)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "PowerShell(npm install -g firebase-tools)",
+      "PowerShell(firebase login --no-localhost)"
     ]
   }
 }
