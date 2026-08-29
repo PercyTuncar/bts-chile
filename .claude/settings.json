@@ -6,7 +6,9 @@
       "PowerShell(npm run build 2>&1)",
       "Bash(npm install *)",
       "PowerShell(npm install -g firebase-tools)",
-      "PowerShell(firebase login --no-localhost)"
+      "PowerShell(firebase login --no-localhost)",
+      "Bash(sed -i '101,243d' app/page.tsx)",
+      "Bash(sed -i '100r .temp_schema_home.txt' app/page.tsx)"
     ]
   }
 }

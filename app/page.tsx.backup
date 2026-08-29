@@ -99,29 +99,19 @@ const SECTIONS = [
 
 export default function Home() {
   const jsonLd = buildGraph([
+    buildWebsite(),
     buildOrganization(),
-    // Enhanced Website with SearchAction
-    {
-      ...buildWebsite(),
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${SITE_URL}/comunidad?q={search_term_string}`,
-        },
-        "query-input": "required name=search_term_string",
-      },
-    },
-    // WebPage
     {
       "@type": "WebPage",
       "@id": `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: "BTS Chile - Comunidad Oficial Kpop | Entradas 2026 100% Seguras",
-      description:
-        "La comunidad oficial de Kpop en Chile. Compra entradas verificadas para BTS Chile 2026 en Estadio Nacional, noticias K-pop, membresía ARMY y conecta con miles de fans.",
+      name: "BTS Chile 2026 | Comunidad Oficial Kpop y Entradas 100% Seguras",
       isPartOf: { "@id": `${SITE_URL}/#website` },
-      about: { "@id": `${SITE_URL}/#event-arirang-chile` },
+      about: { "@id": `${SITE_URL}/#organization` },
+      description:
+        "La comunidad oficial de Kpop en Chile. Compra entradas verificadas para el concierto BTS Chile 2026 en Estadio Nacional Santiago (14, 16 y 17 de octubre), lee las últimas noticias K-pop, únete a la membresía ARMY Boom v4 y conecta con miles de fans chilenas. Próximos eventos, tienda oficial y contenido exclusivo.",
+      inLanguage: "es-CL",
+      breadcrumb: buildBreadcrumbList([{ name: "BTS Chile", path: "/" }]),
       primaryImageOfPage: {
         "@type": "ImageObject",
         "@id": `${SITE_URL}/og-home.jpg#primaryimage`,
@@ -130,142 +120,122 @@ export default function Home() {
         height: 630,
         caption: "BTS Chile 2026 - Comunidad Oficial ARMY",
       },
-      breadcrumb: { "@id": `${SITE_URL}/#breadcrumb` },
-      inLanguage: "es-CL",
-      publisher: { "@id": `${SITE_URL}/#organization` },
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["h1", "h2"],
+      },
     },
-    // Breadcrumb
-    buildBreadcrumbList([
-      { name: "Inicio", path: "/" },
-    ]),
-    // Performer - BTS with full details
     {
-      "@type": "MusicGroup",
-      "@id": `${SITE_URL}/#performer-bts`,
-      name: "BTS",
-      alternateName: ["방탄소년단", "Bangtan Sonyeondan", "Beyond The Scene", "Bangtan Boys"],
-      genre: ["K-pop", "Pop", "Hip hop", "R&B"],
-      url: "https://www.bts-official.com/",
-      sameAs: [
-        "https://www.wikidata.org/wiki/Q13580677",
-        "https://en.wikipedia.org/wiki/BTS",
-        "https://www.instagram.com/bts.bighitofficial/",
-        "https://twitter.com/bts_bighit",
-        "https://www.youtube.com/c/BANGTANTV",
-        "https://open.spotify.com/artist/3Nrfpe0tUJi4K4DXYWgMUX",
-      ],
-      foundingDate: "2013-06-13",
-      foundingLocation: {
-        "@type": "Place",
-        address: {
-          "@type": "PostalAddress",
-          addressCountry: "KR",
-          addressLocality: "Seoul",
-        },
-      },
+      "@type": "ItemList",
+      "@id": `${SITE_URL}/#navigation`,
+      name: "Menú principal de BTS Chile",
+      description: "Navegación principal del sitio BTS Chile",
+      itemListElement: NAV_LINKS.map((link, i) => ({
+        "@type": "SiteNavigationElement",
+        position: i + 1,
+        name: link.anchor,
+        description: link.description,
+        url: `${SITE_URL}${link.href}`,
+      })),
     },
-    // Event Venue
-    {
-      "@type": "EventVenue",
-      "@id": `${SITE_URL}/#venue-estadio-nacional`,
-      name: "Estadio Nacional Julio Martínez Prádanos",
-      alternateName: ["Estadio Nacional", "Coloso de Ñuñoa"],
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Av. Grecia 2001",
-        addressLocality: "Ñuñoa",
-        addressRegion: "Región Metropolitana",
-        postalCode: "7800003",
-        addressCountry: "CL",
-      },
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: -33.465,
-        longitude: -70.606,
-      },
-      maximumAttendeeCapacity: 47000,
-      publicAccess: true,
-      url: "https://www.estadionacional.cl/",
-    },
-    // Main Music Event
     {
       "@type": "MusicEvent",
       "@id": `${SITE_URL}/#event-arirang-chile`,
       name: 'BTS WORLD TOUR "ARIRANG" IN SANTIAGO',
-      description: "BTS regresa a Chile con el BTS WORLD TOUR ARIRANG 2026 en el Estadio Nacional: 14, 16 y 17 de octubre. El grupo de K-pop más exitoso del mundo presenta su esperado concierto en Santiago.",
+      description: "BTS llega a Chile con tres fechas en el Estadio Nacional de Santiago: 14, 16 y 17 de octubre de 2026. El grupo de K-pop más famoso del mundo regresa a Latinoamérica.",
       startDate: "2026-10-14T20:00:00-03:00",
       endDate: "2026-10-17T23:00:00-03:00",
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       image: [
-        "https://cdn-blog.joinnus.com/wp-content/uploads/2026/03/18171412/portada-bts-lanzamiento-de-album-arirang-info.jpg",
-        `${SITE_URL}/og-home.jpg`,
+        `${SITE_URL}/images/bts-arirang-chile-2026.jpg`,
+        `${SITE_URL}/og-entradas.jpg`,
       ],
-      location: { "@id": `${SITE_URL}/#venue-estadio-nacional` },
-      performer: { "@id": `${SITE_URL}/#performer-bts` },
-      organizer: { "@id": `${SITE_URL}/#organization` },
+      location: {
+        "@type": "Place",
+        "@id": `${SITE_URL}/#estadio-nacional`,
+        name: "Estadio Nacional Julio Martínez Prádanos",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Av. Grecia 2001",
+          addressLocality: "Ñuñoa",
+          addressRegion: "Región Metropolitana",
+          postalCode: "7750000",
+          addressCountry: "CL",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: -33.4646,
+          longitude: -70.6094,
+        },
+      },
+      performer: {
+        "@type": "MusicGroup",
+        name: "BTS",
+        alternateName: ["방탄소년단", "Bangtan Sonyeondan", "Beyond The Scene", "Bangtan Boys"],
+        sameAs: [
+          "https://www.wikidata.org/wiki/Q18123741",
+          "https://en.wikipedia.org/wiki/BTS",
+          "https://www.instagram.com/bts.bighitofficial/",
+        ],
+        genre: ["K-pop", "Pop", "Hip hop", "R&B"],
+      },
+      organizer: {
+        "@id": `${SITE_URL}/#organization`,
+      },
       url: `${SITE_URL}/entradas`,
       offers: {
         "@type": "AggregateOffer",
         url: `${SITE_URL}/entradas`,
         priceCurrency: "USD",
-        lowPrice: 299,
-        highPrice: 1784,
-        offerCount: 16,
+        lowPrice: "299",
+        highPrice: "1784",
+        offerCount: 8,
         availability: "https://schema.org/LimitedAvailability",
         validFrom: "2026-04-07T13:00:00-03:00",
         priceValidUntil: "2026-10-17T23:59:59-03:00",
-        seller: { "@id": `${SITE_URL}/#organization` },
+        seller: {
+          "@id": `${SITE_URL}/#organization`,
+        },
       },
-      inLanguage: ["es-CL", "ko", "en"],
+      inLanguage: "es-CL",
       isAccessibleForFree: false,
       typicalAgeRange: "13+",
-      maximumAttendeeCapacity: 47000,
-      audience: {
-        "@type": "Audience",
-        audienceType: "K-pop fans, BTS ARMY",
-      },
     },
-    // Site Navigation ItemList
     {
-      "@type": "ItemList",
-      "@id": `${SITE_URL}/#site-sections`,
-      name: "Secciones principales",
-      itemListElement: [
+      "@type": "FAQPage",
+      "@id": `${SITE_URL}/#faq`,
+      mainEntity: [
         {
-          "@type": "ListItem",
-          position: 1,
-          item: {
-            "@type": "WebPage",
-            name: "Entradas BTS 2026",
-            url: `${SITE_URL}/entradas`,
+          "@type": "Question",
+          name: "¿Cuándo es el concierto de BTS en Chile 2026?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "BTS se presentará en el Estadio Nacional de Santiago en tres fechas: 14, 16 y 17 de octubre de 2026. Las puertas abren a las 18:00 hrs y el show comienza a las 20:00 hrs.",
           },
         },
         {
-          "@type": "ListItem",
-          position: 2,
-          item: {
-            "@type": "WebPage",
-            name: "Comunidad ARMY",
-            url: `${SITE_URL}/comunidad`,
+          "@type": "Question",
+          name: "¿Cuánto cuestan las entradas para BTS Chile 2026?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Las entradas para BTS Chile 2026 van desde $299 USD (Cancha Andes) hasta $1,784 USD (Cancha VIP). Ofrecemos pago en cuotas y todas las entradas son 100% verificadas.",
           },
         },
         {
-          "@type": "ListItem",
-          position: 3,
-          item: {
-            "@type": "WebPage",
-            name: "Noticias K-pop",
-            url: `${SITE_URL}/noticias`,
+          "@type": "Question",
+          name: "¿Dónde es el concierto de BTS en Santiago?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "El concierto de BTS será en el Estadio Nacional Julio Martínez Prádanos, ubicado en Av. Grecia 2001, Ñuñoa, Santiago. Se puede llegar en Metro Línea 6 (estación Estadio Nacional).",
           },
         },
         {
-          "@type": "ListItem",
-          position: 4,
-          item: {
-            "@type": "WebPage",
-            name: "Tienda Oficial",
-            url: `${SITE_URL}/tienda`,
+          "@type": "Question",
+          name: "¿Las entradas BTS Chile son seguras?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Sí, todas nuestras entradas son 100% verificadas y seguras. Somos vendedores oficiales certificados. Ofrecemos garantía de autenticidad, pago seguro y asistencia completa ARMY.",
           },
         },
       ],

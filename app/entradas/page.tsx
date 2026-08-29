@@ -130,8 +130,8 @@ export default async function EntradasPage() {
       },
     },
     buildBreadcrumbList([
-      { name: "Inicio", url: SITE_URL },
-      { name: "Entradas", url: `${SITE_URL}/entradas` },
+      { name: "Inicio", path: "/" },
+      { name: "Entradas", path: "/entradas" },
     ]),
     // Venue
     {
