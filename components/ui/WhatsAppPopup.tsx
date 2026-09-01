@@ -33,7 +33,7 @@ export function WhatsAppPopup() {
   };
 
   const handleJoinGroup = () => {
-    window.open("https://chat.whatsapp.com/JRUbHmnrWAK8az8LqjsFXw", "_blank");
+    window.open("https://chat.whatsapp.com/CWjRdwsDxMHFo3c4CrGwjv", "_blank");
     setIsVisible(false);
   };
 
