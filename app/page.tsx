@@ -21,9 +21,7 @@ import {
 
 // SEO — PRD §15.1.
 export const metadata: Metadata = {
-  title: {
-    absolute: "BTS Chile - Comunidad Oficial Kpop | Entradas 2026 Estadio Nacional",
-  },
+  title: "BTS Chile - Comunidad Oficial Kpop",
   description:
     "BTS Chile es la comunidad oficial de Kpop en el país. Compra entradas 100% seguras para el concierto BTS 2026 en el Estadio Nacional Santiago: 14, 16 y 17 de octubre. Únete a miles de ARMY chilenas.",
   keywords: [
