@@ -2,7 +2,7 @@
 // Los datos se inyectan server-side con <JsonLd> para que Google los lea sin JS.
 // Reglas de oro (§15): el markup refleja el contenido visible; nunca inventar ratings/precios.
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://btschile.com";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.btschile.com";
 
 export type JsonLdData = Record<string, unknown>;
 
