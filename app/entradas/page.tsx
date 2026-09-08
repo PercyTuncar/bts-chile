@@ -24,7 +24,9 @@ const DATE_PUBLISHED = "2026-04-07T13:00:00-03:00"; // salida a la venta
 const DATE_MODIFIED = "2026-07-22";
 
 export const metadata: Metadata = {
-  title: "Entradas BTS Chile",
+  title: {
+    absolute: "Entradas BTS Chile | Disponible",
+  },
   description:
     "Compra tus entradas para BTS en Chile 2026 desde $299 en el Estadio Nacional. Tres fechas: 14, 16 y 17 de octubre. Zonas y precios oficiales.",
   keywords: [
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "BTS Chile",
-    title: "Entradas BTS Chile",
+    title: "Entradas BTS Chile | Disponible",
     description:
       "Compra tus entradas para BTS en Chile 2026 desde $299 en el Estadio Nacional. Tres fechas: 14, 16 y 17 de octubre. Zonas y precios oficiales.",
     url: `${SITE_URL}/entradas`,
@@ -60,7 +62,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     site: "@btschile",
-    title: "Entradas BTS Chile",
+    title: "Entradas BTS Chile | Disponible",
     description:
       "Compra tus entradas para BTS en Chile 2026 desde $299. Tres fechas: 14, 16 y 17 de octubre.",
     images: [OG_IMAGE],
